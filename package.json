@@ -1,6 +1,6 @@
 {
-  "name": "youves-sdk",
-  "version": "0.0.1",
+  "name": "@temple-wallet/wallet-address-validator",
+  "version": "0.0.7",
   "description": "An SDK to simplify the interaction with youves smart contracts.",
   "main": "dist/index.js",
   "scripts": {
