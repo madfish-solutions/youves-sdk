@@ -1,6 +1,6 @@
 {
   "name": "@temple-wallet/youves-sdk",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "An SDK to simplify the interaction with youves smart contracts.",
   "main": "dist/index.js",
   "scripts": {
