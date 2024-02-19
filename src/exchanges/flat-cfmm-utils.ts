@@ -70,7 +70,7 @@ export const marginalPrice = function (cashPool: BigNumber, tokenPool: BigNumber
   return [num, den]
 }
 
-//these are used for the single slide liquidity trade calculation. 
+//these are used for the single slide liquidity trade calculation.
 //The already existing ones have rounding.
 //When using BigNumbers it would be extremely slow so I am using numbers
 export const get_asset_bought = function (

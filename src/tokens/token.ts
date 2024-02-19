@@ -197,11 +197,7 @@ export const lpTokenList: string[] = [
   'uUSD/uBTC LP'
 ]
 
-export const yyTokenList: string[] = [
-  'yyXTZ',
-  'yyUSD',
-  'yTEZ',
-]
+export const yyTokenList: string[] = ['yyXTZ', 'yyUSD', 'yTEZ']
 
 export enum TokenType {
   NATIVE = 0,

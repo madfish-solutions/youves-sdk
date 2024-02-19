@@ -137,10 +137,9 @@ export class PlentyExchange extends Exchange {
 
     const exchangeRate = await this.getExchangeRate()
 
-    const tokenReceived =
-      !reverse
-        ? await this.getExpectedMinimumReceivedToken2ForToken1(amount)
-        : await this.getExpectedMinimumReceivedToken1ForToken2(amount)
+    const tokenReceived = !reverse
+      ? await this.getExpectedMinimumReceivedToken2ForToken1(amount)
+      : await this.getExpectedMinimumReceivedToken1ForToken2(amount)
 
     const currentToken1Pool = new BigNumber(storage.token1_pool)
     const currentToken2Pool = new BigNumber(storage.token2_pool)
@@ -171,7 +170,6 @@ export class PlentyExchange extends Exchange {
     }
 
     return poolInfo
-
   }
 
   public async getExchangeUrl(): Promise<string> {

@@ -157,7 +157,7 @@ const indexPage: string[] = [
   'KT1TSwSAU1qUyRFYBv6ix5YzqLBparxJ3FAk', //BTCXTZ proxy oracle
   'KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5', //Sirius Dex (non youves)
   'KT1WgguedKZWucrdRKQXaRECEPMZennaVPck', //uxtz/xtz flat curve pool
-  'KT1XH5rKSd6Ae3DAMYi26gEZP1gxAoQRYRfS', //ubtc tzbtc
+  'KT1XH5rKSd6Ae3DAMYi26gEZP1gxAoQRYRfS' //ubtc tzbtc
 ]
 
 const earnPage = [

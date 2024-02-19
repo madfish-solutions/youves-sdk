@@ -204,71 +204,71 @@ describe('single side liquidity', () => {
   //   expect(testSingleSideTrade(1_000_000, 0.01, 10_000_000, 10_000_000)?.is_in_tolerance).toBeTruthy()
   // })
   test('single side liquidity : 1_000_000, 50_000, 10_000_000, 10_000_000', () => {
-    console.log("Test #3")
+    console.log('Test #3')
     expect(testSingleSideTrade(1_000_000, 50_000, 10_000_000, 10_000_000)?.is_in_tolerance).toBeTruthy()
   })
   test('single side liquidity : 1_000_000, 500_000, 10_000_000, 10_000_000', () => {
-    console.log("Test #4")
+    console.log('Test #4')
     expect(testSingleSideTrade(1_000_000, 500_000, 10_000_000, 10_000_000)?.is_in_tolerance).toBeTruthy()
   })
   test('single side liquidity : 1_000_000, 1_000_000, 10_000_000, 10_000_000', () => {
-    console.log("Test #5")
+    console.log('Test #5')
     expect(testSingleSideTrade(1_000_000, 1_000_000, 10_000_000, 10_000_000)?.is_in_tolerance).toBeTruthy()
   })
   test('single side liquidity : 500_000, 1_000_000, 10_000_000, 10_000_000', () => {
-    console.log("Test #6")
+    console.log('Test #6')
     expect(testSingleSideTrade(500_000, 1_000_000, 10_000_000, 10_000_000)?.is_in_tolerance).toBeTruthy()
   })
   test('single side liquidity : 50_000, 1_000_000, 10_000_000, 10_000_000', () => {
-    console.log("Test #7")
+    console.log('Test #7')
     expect(testSingleSideTrade(50_000, 1_000_000, 10_000_000, 10_000_000)?.is_in_tolerance).toBeTruthy()
   })
   test('single side liquidity : 0.01, 1_000_000, 10_000_000, 10_000_000', () => {
-    console.log("Test #8")
+    console.log('Test #8')
     expect(testSingleSideTrade(0.01, 1_000_000, 10_000_000, 10_000_000)?.is_in_tolerance).toBeTruthy()
   })
   test('single side liquidity : 0, 1_000_000, 10_000_000, 10_000_000', () => {
-    console.log("Test #9")
+    console.log('Test #9')
     expect(testSingleSideTrade(0, 1_000_000, 10_000_000, 10_000_000)?.is_in_tolerance).toBeTruthy()
   })
   test('single side liquidity : 0, 1_000_000, 10_000_000, 10_000_000', () => {
-    console.log("Test #10")
+    console.log('Test #10')
     expect(testSingleSideTrade(0, 1_000_000, 10_000_000, 10_000_000)?.is_in_tolerance).toBeTruthy()
   })
   test('single side liquidity : 1_000_000, 0, 1_000_000, 10_000_000', () => {
-    console.log("Test #11")
+    console.log('Test #11')
     expect(testSingleSideTrade(1_000_000, 0, 1_000_000, 10_000_000)?.is_in_tolerance).toBeTruthy()
   })
   test('single side liquidity : 1_000_000, 0.1, 1_000_000, 10_000_000', () => {
-    console.log("Test #12")
+    console.log('Test #12')
     expect(testSingleSideTrade(1_000_000, 0.1, 1_000_000, 10_000_000)?.is_in_tolerance).toBeTruthy()
   })
   test('single side liquidity : 1_000_000, 50_000, 1_000_000, 10_000_000', () => {
-    console.log("Test #13")
+    console.log('Test #13')
     expect(testSingleSideTrade(1_000_000, 50_000, 1_000_000, 10_000_000)?.is_in_tolerance).toBeTruthy()
   })
   test('single side liquidity : 1_000_000, 500_000, 1_000_000, 10_000_000', () => {
-    console.log("Test #14")
+    console.log('Test #14')
     expect(testSingleSideTrade(1_000_000, 500_000, 1_000_000, 10_000_000)?.is_in_tolerance).toBeTruthy()
   })
   test('single side liquidity : 1_000_000, 1_000_000, 1_000_000, 10_000_000', () => {
-    console.log("Test #15")
+    console.log('Test #15')
     expect(testSingleSideTrade(1_000_000, 1_000_000, 1_000_000, 10_000_000)?.is_in_tolerance).toBeTruthy()
   })
   test('single side liquidity : 500_000, 1_000_000, 1_000_000, 10_000_000', () => {
-    console.log("Test #16")
+    console.log('Test #16')
     expect(testSingleSideTrade(500_000, 1_000_000, 1_000_000, 10_000_000)?.is_in_tolerance).toBeTruthy()
   })
   test('single side liquidity : 50_000, 1_000_000, 1_000_000, 10_000_000', () => {
-    console.log("Test #17")
+    console.log('Test #17')
     expect(testSingleSideTrade(50_000, 1_000_000, 1_000_000, 10_000_000)?.is_in_tolerance).toBeTruthy()
   })
   test('single side liquidity : 0.01, 1_000_000, 1_000_000, 10_000_000', () => {
-    console.log("Test #18")
+    console.log('Test #18')
     expect(testSingleSideTrade(0.01, 1_000_000, 1_000_000, 10_000_000)?.is_in_tolerance).toBeTruthy()
   })
   test('single side liquidity : 0, 1_000_000, 1_000_000, 10_000_000', () => {
-    console.log("Test #19")
+    console.log('Test #19')
     expect(testSingleSideTrade(0, 1_000_000, 1_000_000, 10_000_000)?.is_in_tolerance).toBeTruthy()
   })
   // test('single side liquidity : 1_000_000, 0, 10_000_000, 1_000_000', () => {
@@ -285,37 +285,37 @@ describe('single side liquidity', () => {
   // })
   // wallet size is vvery significant compared to the liq pool. The convergence is a bit worse but still ok-ish
   test('single side liquidity : 1_000_000, 500_000, 10_000_000, 1_000_000', () => {
-    console.log("Test #23")
+    console.log('Test #23')
     const result = testSingleSideTrade(1_000_000, 500_000, 10_000_000, 1_000_000)
     // console.log(result?.difference_new)
     expect(result?.is_in_tolerance).toBeFalsy()
   })
   test('single side liquidity : 1_000_000, 1_000_000, 10_000_000, 1_000_000', () => {
-    console.log("Test #24")
+    console.log('Test #24')
     const result = testSingleSideTrade(1_000_000, 1_000_000, 10_000_000, 1_000_000)
     // console.log(result?.difference_new)
     expect(result?.is_in_tolerance).toBeFalsy()
   })
   test('single side liquidity : 500_000, 1_000_000, 10_000_000, 1_000_000', () => {
-    console.log("Test #25")
+    console.log('Test #25')
     const result = testSingleSideTrade(500_000, 1_000_000, 10_000_000, 1_000_000)
     // console.log(result?.difference_new)
     expect(result?.is_in_tolerance).toBeFalsy()
   })
   test('single side liquidity : 50_000, 1_000_000, 10_000_000, 1_000_000', () => {
-    console.log("Test #26")
+    console.log('Test #26')
     const result = testSingleSideTrade(50_000, 1_000_000, 10_000_000, 1_000_000)
     // console.log(result?.difference_new)
     expect(result?.is_in_tolerance).toBeFalsy()
   })
   test('single side liquidity : 0.01, 1_000_000, 10_000_000, 1_000_000', () => {
-    console.log("Test #27")
+    console.log('Test #27')
     const result = testSingleSideTrade(0.01, 1_000_000, 10_000_000, 1_000_000)
     // console.log(result?.difference_new)
     expect(result?.is_in_tolerance).toBeFalsy()
   })
   test('single side liquidity : 0, 1_000_000, 10_000_000, 1_000_000', () => {
-    console.log("Test #28")
+    console.log('Test #28')
     const result = testSingleSideTrade(0, 1_000_000, 10_000_000, 1_000_000)
     // console.log(result?.difference_new)
     expect(result?.is_in_tolerance).toBeFalsy()
