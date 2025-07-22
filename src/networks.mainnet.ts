@@ -858,6 +858,28 @@ export const mainnetContracts: AssetDefinition[] = [
     },
     collateralOptions: [
       {
+        token: mainnetTokens.stxtzToken,
+        targetOracle: {
+          address: 'KT1HAAScQBEaXkSb6KorLMKHJPXaPng2Uf4R',
+          decimals: 6,
+          entrypoint: 'get_price',
+          isView: true,
+          symbol: 'stxtz/USD'
+        },
+        ORACLE_SYMBOL: 'XTZ',
+        ENGINE_ADDRESS: 'KT1XsYic2oN1xfYpqo2pky9AHYxpTgJsXvzR',
+        ENGINE_TYPE: EngineType.TRACKER_V3_0,
+        OPTIONS_LISTING_ADDRESS: '',
+        SUPPORTS_BAILOUT: false,
+        SUPPORTS_CONVERSION: false,
+        HAS_OBSERVED_PRICE: false,
+        collateralTarget: 2,
+        collateralWarning: 1.7,
+        collateralEmergency: 1.6,
+        isLatest: true,
+        new: true
+      },
+      {
         token: mainnetTokens.xtzToken,
         targetOracle: {
           address: 'KT1NLW9G8Z44DYW92KXQ433aKsdTsmMJKrkH',
@@ -1087,6 +1109,28 @@ export const mainnetContracts: AssetDefinition[] = [
 
     collateralOptions: [
       {
+        token: mainnetTokens.stxtzToken,
+        targetOracle: {
+          address: 'KT1ExkdV7SDVyDnFLwRhrkt9Rd9tvNLtnzV9',
+          decimals: 6,
+          entrypoint: 'get_price',
+          isView: true,
+          symbol: 'stxtz/BTC'
+        },
+        ORACLE_SYMBOL: 'BTC',
+        ENGINE_ADDRESS: 'KT1UR6UbdhAKDaPrnUhE4Gi5TiFECpQ7zeYJ',
+        ENGINE_TYPE: EngineType.TRACKER_V3_0,
+        OPTIONS_LISTING_ADDRESS: '',
+        SUPPORTS_BAILOUT: false,
+        SUPPORTS_CONVERSION: false,
+        HAS_OBSERVED_PRICE: false,
+        collateralTarget: 2,
+        collateralWarning: 1.7,
+        collateralEmergency: 1.6,
+        isLatest: true,
+        new: true
+      },
+      {
         token: mainnetTokens.xtzToken,
         targetOracle: {
           address: 'KT1DsEbKT1KnUtG8pihWV2g5DAjadUmyKXLK',
@@ -1266,6 +1310,28 @@ export const mainnetContracts: AssetDefinition[] = [
       doubleRewards: ''
     },
     collateralOptions: [
+      {
+        token: mainnetTokens.stxtzToken,
+        targetOracle: {
+          address: 'KT1PyGNfCKJiQ3choCSxjfGZvSLzqgCFCzPp',
+          decimals: 6,
+          entrypoint: 'get_price',
+          isView: true,
+          symbol: 'stxtz/tez'
+        },
+        ORACLE_SYMBOL: 'XTZ',
+        ENGINE_ADDRESS: 'KT1A91hmNxST3ZFCNA6CKQhPVBxwomRRNF7t',
+        ENGINE_TYPE: EngineType.TRACKER_V3_0,
+        OPTIONS_LISTING_ADDRESS: '',
+        SUPPORTS_BAILOUT: false,
+        SUPPORTS_CONVERSION: false,
+        HAS_OBSERVED_PRICE: false,
+        collateralTarget: 1.15,
+        collateralWarning: 1.12,
+        collateralEmergency: 1.1,
+        isLatest: true,
+        new: true
+      },
       {
         token: mainnetTokens.xtzToken,
         targetOracle: {
