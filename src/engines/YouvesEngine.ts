@@ -915,7 +915,7 @@ export class YouvesEngine {
       .dividedBy(this.activeCollateral.collateralTarget)
       .dividedBy(new BigNumber(targetPrice))
       .shiftedBy(
-        this.activeCollateral.token.symbol === 'tez'
+        this.activeCollateral.token.symbol === 'tez' || this.activeCollateral.token.symbol === 'stXTZ'
           ? this.token.decimals
           : this.activeCollateral.token.symbol === 'sirs'
           ? 6 + 12
@@ -1872,7 +1872,7 @@ export class YouvesEngine {
      * This method was introduced because since the beginning (or the introduction of a second collateral), the decimal place is wrong in some places (because of different decimals and different oracle decimals). There was no time to properly fix it, so this switch case was introduced to handle the different cases. This should be removed ASAP and all numbers should be normalised.
      */
 
-    return this.activeCollateral.token.symbol === 'tez'
+    return this.activeCollateral.token.symbol === 'tez' || this.activeCollateral.token.symbol === 'stXTZ'
       ? this.token.decimals
       : this.activeCollateral.token.symbol === 'tzbtc'
       ? 10

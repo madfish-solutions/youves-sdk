@@ -867,7 +867,7 @@ export const mainnetContracts: AssetDefinition[] = [
           symbol: 'stxtz/USD'
         },
         ORACLE_SYMBOL: 'XTZ',
-        ENGINE_ADDRESS: 'KT1XsYic2oN1xfYpqo2pky9AHYxpTgJsXvzR',
+        ENGINE_ADDRESS: 'KT1WF5gHq5zSy2cExAtuhAqaTcc18HJPNeb7',
         ENGINE_TYPE: EngineType.TRACKER_V3_0,
         OPTIONS_LISTING_ADDRESS: '',
         SUPPORTS_BAILOUT: false,
