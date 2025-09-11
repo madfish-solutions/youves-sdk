@@ -350,10 +350,10 @@ export const mainnetFarms: Farm[] = [
     lpToken: mainnetTokens.youxtzLP,
     rewardToken: mainnetTokens.youToken,
     farmContract: 'KT1QD3EUehqXa37ieK8jxdFPC81YdgfvP277',
-    expectedWeeklyRewards: 210,
+    expectedWeeklyRewards: 0,
     dexType: DexType.CPMM,
-    active: true,
-    new: true
+    active: false,
+    new: false
   },
   {
     type: FarmType.MULTI_POOL,
