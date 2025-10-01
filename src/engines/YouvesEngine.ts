@@ -1,7 +1,7 @@
 import { ContractAbstraction, ContractMethod, TezosToolkit, Wallet } from '@taquito/taquito'
 
 import BigNumber from 'bignumber.js'
-import { CollateralInfo, AssetDefinition, DexType, EngineType, NetworkConstants, TargetOracle } from '../networks.base'
+import { CollateralInfo, AssetDefinition, DexType, EngineType, NetworkConstants, TargetOracle, SwapVersion } from '../networks.base'
 import { Storage } from '../storage/Storage'
 import { StorageKey, StorageKeyReturnType } from '../storage/types'
 import {
@@ -40,9 +40,11 @@ import { FlatYouvesExchange } from '../exchanges/flat-youves-swap'
 import { UnifiedSavings } from '../staking/savings-v3'
 import { UnifiedStaking } from '../staking/unified-staking'
 import { PriceService } from '../PriceService'
+import { CpmmExchange } from '../exchanges/cpmm'
+import { mainnetTokens } from '../networks.mainnet'
 
-const WEEKLY_GOVERNANCE_ISSUANCE_PLATFORM = 10000
-export const WEEKLY_GOVERNANCE_ISSUANCE_UBINETIC = 1250
+const WEEKLY_GOVERNANCE_ISSUANCE_PLATFORM = 2500
+export const WEEKLY_GOVERNANCE_ISSUANCE_UBINETIC = 312.5
 
 const promiseCache = new Map<string, Promise<unknown>>()
 
@@ -846,7 +848,22 @@ export class YouvesEngine {
     if (!this.GOVERNANCE_DEX) {
       return new BigNumber(0)
     }
-    return this.getExchangeRate(this.GOVERNANCE_DEX)
+    const governanceTokenExchange = new CpmmExchange(
+      this.tezos,
+      this.GOVERNANCE_DEX,
+      {
+        token1: mainnetTokens.xtzToken,
+        token2: mainnetTokens.youToken,
+        dexType: DexType.CPMM,
+        contractAddress: 'KT1XFnhsV8Yd5FaaZY4ktR7Qt8fBMdxgZ6qh',
+        liquidityToken: mainnetTokens.youxtzLP,
+        version: SwapVersion.CPMM
+      },
+      this.networkConstants
+    )
+    const exchangeRate = await governanceTokenExchange.getExchangeRate()
+    console.log('exchangeRate', exchangeRate.toNumber()) 
+    return exchangeRate
   }
 
   @cache()
@@ -867,7 +884,6 @@ export class YouvesEngine {
 
   @cache()
   protected async getObservedPrice(): Promise<BigNumber> {
-    // TODO: Remove this if and move else to checker engine?
     if (
       this.ENGINE_TYPE === EngineType.TRACKER_V1 ||
       this.ENGINE_TYPE === EngineType.TRACKER_V2 ||
@@ -899,7 +915,7 @@ export class YouvesEngine {
       .dividedBy(this.activeCollateral.collateralTarget)
       .dividedBy(new BigNumber(targetPrice))
       .shiftedBy(
-        this.activeCollateral.token.symbol === 'tez'
+        this.activeCollateral.token.symbol === 'tez' || this.activeCollateral.token.symbol === 'stXTZ'
           ? this.token.decimals
           : this.activeCollateral.token.symbol === 'sirs'
           ? 6 + 12
@@ -1856,7 +1872,7 @@ export class YouvesEngine {
      * This method was introduced because since the beginning (or the introduction of a second collateral), the decimal place is wrong in some places (because of different decimals and different oracle decimals). There was no time to properly fix it, so this switch case was introduced to handle the different cases. This should be removed ASAP and all numbers should be normalised.
      */
 
-    return this.activeCollateral.token.symbol === 'tez'
+    return this.activeCollateral.token.symbol === 'tez' || this.activeCollateral.token.symbol === 'stXTZ'
       ? this.token.decimals
       : this.activeCollateral.token.symbol === 'tzbtc'
       ? 10

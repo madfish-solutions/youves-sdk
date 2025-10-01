@@ -5,7 +5,6 @@ export type TokenSymbol =
   | 'uDEFI'
   | 'uBTC'
   | 'uXTZ'
-  | 'cCHF'
   | 'uXAU'
   | 'YOU'
   | 'tzbtc'
@@ -37,16 +36,18 @@ export type TokenSymbol =
   | 'uusdusdtLP'
   | 'uusdusdceLP'
   | 'ubtcwbtceLP'
-  | 'ctezcchfLP'
   | 'ctezxtzLP'
   | 'youuxtzLP'
   | 'uXAU/uUSD LP'
   | 'uXAU/PAXG.e LP'
   | 'uXAU/uXTZ LP'
   | 'uUSD/uBTC LP'
+  | 'USDt/tzBTC/XTZ LP'
   | 'yyXTZ'
   | 'yyUSD'
   | 'yTEZ'
+  | 'stXTZ'
+  | 'stXTZ/XTZ LP'
   | 'ETHtz'
   | 'wXTZ'
   | 'kDAO'
@@ -164,6 +165,7 @@ export type TokenSymbol =
   | 'TOKENS'
   | 'LYZI'
   | 'PAXG.e'
+  | 'USDt/XTZ LP'
 
 export type AssetSymbol = 'USD' | 'BTC' | 'CHF' | 'XAU'
 
@@ -185,7 +187,6 @@ export const lpTokenList: string[] = [
   'uusdusdtLP',
   'uusdusdceLP',
   'ubtcwbtceLP',
-  'ctezcchfLP',
   'ctezxtzLP',
   'youuxtzLP',
   'yyXTZ',
@@ -194,7 +195,9 @@ export const lpTokenList: string[] = [
   'uXAU/uUSD LP',
   'uXAU/PAXG.e LP',
   'uXAU/uXTZ LP',
-  'uUSD/uBTC LP'
+  'uUSD/uBTC LP',
+  'USDt/XTZ LP',
+  'USDt/tzBTC/XTZ LP'
 ]
 
 export const yyTokenList: string[] = ['yyXTZ', 'yyUSD', 'yTEZ']

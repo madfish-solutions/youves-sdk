@@ -1,8 +1,8 @@
 const fs = require('fs')
 const { TezosToolkit } = require('@taquito/taquito')
-const Tezos = new TezosToolkit('https://mainnet.smartpy.io')
+const Tezos = new TezosToolkit('https://tezos-node-rolling.prod.gke.papers.tech')
 
-const CONTRACTS_FILE = './src/contracts/contracts.ts'
+const CONTRACTS_FILE = './submodules/youves-sdk/src/contracts/contracts.ts'
 const exportPrefix = 'export const contractInfo = '
 
 const getDataForContracts = async (
@@ -53,7 +53,7 @@ const indexPage: string[] = [
   'KT1M8asPmVQhFG6yujzttGonznkghocEkbFk',
   'KT1TMfRfmJ5mkJEXZGRCsqLHn2rgnV1SdUzb',
   'KT1A1VNTvyqJYZN2FypF2kiTBPdoRvG9sCA7',
-  'KT1PL1YciLdwMbydt21Ax85iZXXyGSrKT2BE',
+  'KT1XFnhsV8Yd5FaaZY4ktR7Qt8fBMdxgZ6qh',
   'KT1FFE2LC5JpVakVjHm5mM36QVp2p3ZzH4hH',
   'KT1EtjRRCBC2exyCRXz8UfV7jz7svnkqi7di',
   'KT1TnrLFrdemNZ1AnnWNfi21rXg7eknS484C',
@@ -94,14 +94,14 @@ const indexPage: string[] = [
   'KT1CP1C8afHqdNfBsSE3ggQhzM2iMHd4cRyt',
   'KT1TCLpFRB6xiRmeupUCz9yFf7JiEvbLe1aS',
   'KT1J217QyWoPSE8EtAySMyJjr8ptTsakBszP',
-  'KT1CeZvxMXqEjf2tQ7a5Ex7S9wVRLJWYaSUu',
-  'KT1KpFkAKgrAJNXZxhahFaTduTAoEc8jFpmQ',
+  'KT1Wgjs4VtkvTrdCyf3TVumCY59KS8ydqZX9',
+  'KT1BgRxpt3G6vpTZwbuJLmArgp13eD71rLtD',
   'KT1DHndgk8ah1MLfciDnCV2zPJrVbnnAH9fd',
   'KT1H4h1VunWkVE9Cuq1QDVy9xRNLBSbqXsr9',
   'KT1DP7rtzCGotqwgmZP8vViTVGz22mBwGGTT',
-  'KT1F6Amndd62P8yySM5NkyF4b1Kz27Ft4QeT',
+  'KT1NLW9G8Z44DYW92KXQ433aKsdTsmMJKrkH',
   'KT1G6RzVX25YnoU55Xb7Vve3zvuZKmouf24a',
-  'KT1QDWxfzptWPooyqmf1pjsjGkGcfu8dM32z',
+  'KT1DsEbKT1KnUtG8pihWV2g5DAjadUmyKXLK',
   'KT1F1JMgh6SfqBCK6T6o7ggRTdeTLw91KKks',
   'KT1V9Rsc4ES3eeQTr4gEfJmNhVbeHrAZmMgC',
   'KT1CpXvNd293VvHkY7M9krjBvwEFuvura65Q',
@@ -110,13 +110,13 @@ const indexPage: string[] = [
   'KT1X7NYegSr27zrCfHEWHBfzv2QJXtiyD2a2',
 
   'KT1XnTn74bUtxHfDtBmm2bGZAQfhPbvKWR8o',
-  'KT1XM1vtYnMkDFxUqy4uHCbXMw9h2qJZojWq',
+  'KT1USEJPFn2EtsYFJd4AzghVWNYWahtdgHGU',
   'KT1V4UcdgjuirVxeZcTrFXvDRCyhMqnqBeLX',
   'KT1UJBvm4hv11Uvu6r4c8zE5K2EfmwiRVgsm',
   'KT1JmfujyCYTw5krfu9bSn7YbLYuz2VbNaje',
 
   'KT1LwikDGBoBmrwCZbk2LrfV7ZBj26hNLGy6',
-  'KT1R6XgLEtpWt4bUqG5aJzd8Pe2o1a4kHfKz',
+  'KT1CwuJ1TNkerkfn5KtMha5oq3KNWiiNa1iK',
   'KT1HYJRBNCekoangcEPppaRMUFhbb4WNvEt3',
   'KT1AY8xaXU3M3XnaUxa6teLENU5Ku6z3YDbW',
   'KT1MPUDs1CSo5QzxtittccisyR32S4EZ7NiV',
@@ -151,13 +151,34 @@ const indexPage: string[] = [
   'KT1Mf9Nr1KyGC6gUz9pGQnngzWbbZ6thShvc', //uxtz xtz
   'KT1NC8PcGG6QR6V2AezQTwd8xjgorDzkCzYy', //ubtc sirs 0%
   'KT1PuCU5UAoaX2Hjcns2SEmJWBC34tfLjzaS', //oracle 1:1
-  'KT1PvKziQx7pJhfr3FdvkhMPwCwLxjd32HkZ', //XTZUSDT oracle
+  'KT1KD9Tp72C36tBx14WeU49Qv8LXznqXajch', //XTZUSDT oracle
   'KT1SEjPmaeVPMu4Ep94ggF3tLqzFM83T3pBd', //ubtc sirs 0%
   'KT1TcCSR24TmDvwTfHkyWbwMB111gtNYxEcA', //uusd tez 0%
-  'KT1TSwSAU1qUyRFYBv6ix5YzqLBparxJ3FAk', //BTCXTZ proxy oracle
+  'KT18dPYXwqbNiDVM6UKzq9bkLGb84GizcDXc', //BTCXTZ proxy oracle
   'KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5', //Sirius Dex (non youves)
   'KT1WgguedKZWucrdRKQXaRECEPMZennaVPck', //uxtz/xtz flat curve pool
-  'KT1XH5rKSd6Ae3DAMYi26gEZP1gxAoQRYRfS' //ubtc tzbtc
+  'KT1XH5rKSd6Ae3DAMYi26gEZP1gxAoQRYRfS', //ubtc tzbtc
+
+  'KT1T3BFEu9WSQyRuV9Fyd7SqTU4rW3ptJ3NN', //youves DAO
+
+  'KT1VhU47n633rqJeAZESfbejnxeJmpXVx3AA', //uXAU
+
+  'KT1Ad5yJzoiRRdMJPvhJiPJ7Cq8WbJnCS7bg',
+  'KT19cZHwuaPvNY85Un5dtmKzGGaMgbvadSBg',
+  'KT1KtppgF2g4to6UpQNFo1PVdByhoq9XMqYM',
+  'KT1KXvsh7vnPUkBj1oG1E3LUoFnKHsf7Wixo',
+  'KT1STLQKxiRtAh1e7DZhu1xUTAJ7KLpV9Rru',
+  'KT1THDHbRFr5JkabMVhZJJJy6nz87RrqSbkD',
+  'KT1PEr4scQdNurofRFN1tarwe4onZgLBSbr6',
+  'KT1ENJfVK98HTRfxjFKPqu1R7tFwXVjmLAo2',
+  'KT1HiaP7QXVRrJGbidPrBqcvBPanzxqH5ipi',
+  'KT1PmRCdyJEXKGmH9ewFKRFv2z94kWiWN42t',
+  'KT1CCGfgcV6Tu72b8C6S74ifuKLggSNm9AKL',
+  'KT1QD3EUehqXa37ieK8jxdFPC81YdgfvP277',
+  'KT1At1kk3y6a6UGHjZnAg6xeh3RgFbXNEJ4V',
+  'KT1NodvAh8uTny1uU35rLAErzkTG66uxKNiM',
+  'KT1T8xsBYsGUyCByKzDYzGsDThdYeDbXHbyQ',
+  'KT1Ad5yJzoiRRdMJPvhJiPJ7Cq8WbJnCS7bg'
 ]
 
 const earnPage = [
