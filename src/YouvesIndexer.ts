@@ -5,6 +5,7 @@ import { distinctUntilChanged } from 'rxjs/operators'
 import { Token, TokenType } from './tokens/token'
 import { Activity, IndexerConfig, Intent, Vault } from './types'
 import { doRequestWithCache } from './utils'
+import { AxiosError } from 'axios'
 
 export enum IndexerStatusType {
   ONLINE,
@@ -46,7 +47,7 @@ export class YouvesIndexer {
 
       return isInSync
     } catch (error) {
-      console.error('🚨 indexer error: getSyncStatus()', error)
+      console.error('🚨 indexer error: getSyncStatus()', error instanceof AxiosError ? error.config?.url : error)
       internalIndexerStatus.next(IndexerStatusType.OFFLINE)
 
       return false
