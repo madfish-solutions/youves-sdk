@@ -4,10 +4,13 @@ export enum FarmType {
   NO_LOCK = 1,
   INCENTIVISED = 2,
   PLENTY = 3,
-  YIELD_POOL = 4
+  YIELD_POOL = 4,
+  MULTI_POOL = 5
 }
 
 export enum SwapVersion {
+  MULTI = 4,
+  CPMM = 3,
   Y2 = 2,
   YY = 1,
   LEGACY = 0
@@ -17,6 +20,7 @@ export interface Farm {
   type: FarmType
   token1: Token
   token2: Token
+  token3?: Token
   lpToken: Token
   rewardToken: Token
   farmContract: string
@@ -29,6 +33,7 @@ export interface Farm {
   swapAddress?: string
   isYy?: boolean
   swapVersion?: SwapVersion
+  new?: boolean
 }
 
 export interface FlatYouvesExchangeInfo {
@@ -42,17 +47,6 @@ export interface FlatYouvesExchangeInfo {
   version?: number
   isLegacy?: boolean
   isTargetCurve?: boolean
-}
-
-export interface CheckerExchangeInfo {
-  token1: Token
-  token2: Token
-  dexType: DexType.CHECKER
-  contractAddress: string
-  liquidityToken: Token
-  isMarket?: boolean
-  version?: number
-  isLegacy?: boolean
 }
 
 export interface QuipuswapExchangeInfo {
@@ -77,7 +71,30 @@ export interface PlentyExchangeInfo {
   isLegacy?: boolean
 }
 
-export type ExchangePair = FlatYouvesExchangeInfo | CheckerExchangeInfo | QuipuswapExchangeInfo | PlentyExchangeInfo
+export interface MultiswapExchangeInfo {
+  token1: Token
+  token2: Token
+  token3: Token
+  dexType: DexType.MULTISWAP
+  contractAddress: string
+  liquidityToken: Token
+  isMarket?: boolean
+  version?: number
+  isLegacy?: boolean
+}
+
+export interface CpmmExchangeInfo {
+  token1: Token
+  token2: Token
+  dexType: DexType.CPMM
+  contractAddress: string
+  liquidityToken: Token
+  isMarket?: boolean
+  version?: number
+  isLegacy?: boolean
+}
+
+export type ExchangePair = FlatYouvesExchangeInfo | QuipuswapExchangeInfo | PlentyExchangeInfo | MultiswapExchangeInfo | CpmmExchangeInfo
 
 export interface TargetOracle {
   address: string
@@ -140,21 +157,23 @@ export interface NetworkConstants {
   farms: Farm[]
   dexes: ExchangePair[]
   unifiedStaking: string
+  bailoutPool: string
   ctezTezDex: string
+  dao: string
+  legacyDaos?: string[]
 }
 export interface Assets {
   mainnet: AssetDefinition[]
   ithacanet: AssetDefinition[]
 }
 
-export type AssetField = 'uUSD' | 'uDEFI' | 'uBTC' | 'cCHF' | 'uXTZ' | 'uXAU'
+export type AssetField = 'uUSD' | 'uDEFI' | 'uBTC' | 'uXTZ' | 'uXAU'
 
 export enum EngineType {
   TRACKER_V1 = 'tracker-v1',
   TRACKER_V2 = 'tracker-v2',
   TRACKER_V3 = 'tracker-v3',
-  TRACKER_V3_0 = 'tracker-v3-0',
-  CHECKER_V1 = 'checker-v1'
+  TRACKER_V3_0 = 'tracker-v3-0'
 }
 
 export enum DexType {
@@ -162,8 +181,9 @@ export enum DexType {
   PLENTY = 'plenty',
   FLAT_CURVE = 'flat_curve',
   FLAT_CURVE_V2 = 'flat_curve_v2',
-  CHECKER = 'checker',
-  _3ROUTE = '3route'
+  _3ROUTE = '3route',
+  MULTISWAP = 'multiswap',
+  CPMM = 'cpmm'
 }
 
 export const xtzToken: Omit<Token, 'contractAddress'> = {
@@ -356,21 +376,6 @@ export const uxtzToken: Omit<Token, 'contractAddress'> = {
   decimalPlaces: 2,
   inputDecimalPlaces: 4,
   _3RouteId: 125
-}
-
-export const cchfToken: Omit<Token, 'contractAddress'> = {
-  id: 'cCHF',
-  type: TokenType.FA2,
-  name: 'youves cCHF',
-  shortName: 'cCHF',
-  decimals: 12,
-  symbol: 'cCHF',
-  targetSymbol: 'CHF',
-  unit: 'cCHF',
-  impliedPrice: 1.25,
-  tokenId: 0,
-  decimalPlaces: 2,
-  inputDecimalPlaces: 4
 }
 
 export const uxauToken: Omit<Token, 'contractAddress'> = {
@@ -663,9 +668,24 @@ export const uxtzusdtLP: Omit<Token, 'contractAddress'> = {
   inputDecimalPlaces: 4
 }
 
+export const xtzusdtLP: Omit<Token, 'contractAddress'> = {
+  id: 'USDt/XTZ LP',
+  type: TokenType.FA1p2,
+  name: 'USDt/XTZ LP',
+  shortName: 'USDt/XTZ LP',
+  decimals: 12, //TODO UXTZ
+  symbol: 'USDt/XTZ LP',
+  targetSymbol: 'USDt/XTZ LP',
+  unit: 'USDt/XTZ LP',
+  impliedPrice: 1,
+  tokenId: 0, //TODO UXTZ
+  decimalPlaces: 2,
+  inputDecimalPlaces: 4
+}
+
 export const youxtzLP: Omit<Token, 'contractAddress'> = {
   id: 'youxtzLP',
-  type: TokenType.FA2,
+  type: TokenType.FA1p2,
   name: 'YOU/XTZ LP',
   shortName: 'YOU/XTZ LP',
   decimals: 6,
@@ -753,21 +773,6 @@ export const ubtcwbtceLP: Omit<Token, 'contractAddress'> = {
   inputDecimalPlaces: 12
 }
 
-export const ctezcchfLP: Omit<Token, 'contractAddress'> = {
-  id: 'ctezcchfLP',
-  type: TokenType.FA2,
-  name: 'ctez/cCHF LP',
-  shortName: 'ctez/cCHF LP',
-  decimals: 6,
-  symbol: 'ctezcchfLP',
-  targetSymbol: 'ctez/cCHF LP',
-  unit: 'ctezcchfLP',
-  impliedPrice: 1,
-  tokenId: 1,
-  decimalPlaces: 2,
-  inputDecimalPlaces: 4
-}
-
 export const ctezxtzLP: Omit<Token, 'contractAddress'> = {
   id: 'ctezxtzLP',
   type: TokenType.FA2,
@@ -843,6 +848,36 @@ export const ytezLP: Omit<Token, 'contractAddress'> = {
   inputDecimalPlaces: 4
 }
 
+export const stxtzToken: Omit<Token, 'contractAddress'> = {
+  id: 'stXTZ',
+  type: TokenType.FA2,
+  name: 'Staked XTZ',
+  shortName: 'stXTZ',
+  decimals: 6,
+  symbol: 'stXTZ',
+  targetSymbol: 'stXTZ',
+  unit: 'stXTZ',
+  impliedPrice: 1,
+  tokenId: 0,
+  decimalPlaces: 2,
+  inputDecimalPlaces: 4
+}
+
+export const stxtzLP: Omit<Token, 'contractAddress'> = {
+  id: 'stXTZ/XTZ LP',
+  type: TokenType.FA1p2,
+  name: 'stXTZ/XTZ LP',
+  shortName: 'stXTZ/XTZ LP',
+  decimals: 6,
+  symbol: 'stXTZ/XTZ LP',
+  targetSymbol: 'stXTZ/XTZ LP',
+  unit: 'stXTZ/XTZ LP',
+  impliedPrice: 1,
+  tokenId: 0,
+  decimalPlaces: 2,
+  inputDecimalPlaces: 4
+}
+
 export const paxgeToken: Omit<Token, 'contractAddress'> = {
   id: 'PAXG.e',
   type: TokenType.FA2,
@@ -882,6 +917,21 @@ export const uxauuxtzLP: Omit<Token, 'contractAddress'> = {
   symbol: 'uXAU/uXTZ LP',
   targetSymbol: 'uXAU/uXTZ LP',
   unit: 'uXAU/uXTZ LP',
+  impliedPrice: 1,
+  tokenId: 0,
+  decimalPlaces: 8,
+  inputDecimalPlaces: 8
+}
+
+export const usdttzbtcxtzLP: Omit<Token, 'contractAddress'> = {
+  id: 'USDt/tzBTC/XTZ LP',
+  type: TokenType.FA1p2,
+  name: 'USDt/tzBTC/XTZ LP',
+  shortName: 'USDt/tzBTC/XTZ LP',
+  decimals: 6,
+  symbol: 'USDt/tzBTC/XTZ LP',
+  targetSymbol: 'USDt/tzBTC/XTZ LP',
+  unit: 'USDt/tzBTC/XTZ LP',
   impliedPrice: 1,
   tokenId: 0,
   decimalPlaces: 8,

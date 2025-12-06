@@ -18,16 +18,17 @@ import {
   NetworkConstants,
   Farm,
   // FarmType,
-  // cchfToken,
   uusdToken,
-  cchfToken,
   DexType,
   ctezToken,
-  ctezcchfLP,
   usdtToken,
   ctezxtzLP,
   uxauToken,
-  uxauuusdLP
+  uxauuusdLP,
+  uxtzToken,
+  tzbtcToken,
+  usdttzbtcxtzLP,
+  SwapVersion
 } from './networks.base'
 import { Token } from './tokens/token'
 
@@ -36,9 +37,10 @@ export const ithacanetTokens: Record<string, Token> = {
   youToken: { ...youToken, contractAddress: 'KT1J4CiyWPmtFPXAjpgBezM5hoVHXHNzWBHK' },
   // tzbtcLP: { ...tzbtcLPToken, decimals: 18, contractAddress: '' },
   uusdToken: { ...uusdToken, contractAddress: 'KT1CrNkK2jpdMycfBdPpvTLSLCokRBhZtMq7', tokenId: 0 },
+  uxtzToken: { ...uxtzToken, contractAddress: 'KT1CrNkK2jpdMycfBdPpvTLSLCokRBhZtMq7', tokenId: 3 },
+  tzbtcToken: { ...tzbtcToken, contractAddress: 'KT18jqS6maEXL8AWvc2x2bppHNRQNqPq8axP' },
   // udefiToken: { ...udefiToken, contractAddress: '' },
   // ubtcToken: { ...ubtcToken, contractAddress: '' },
-  cchfToken: { ...cchfToken, contractAddress: 'KT1JRm8gRGVrCWRE9rdTcqKj8Xos7JuFu5hM', tokenId: 0 },
   ctezToken: { ...ctezToken, contractAddress: 'KT1Q4qRd8mKS7eWUgTfJzCN8RC6h9CzzjVJb' },
   // plentyToken: { ...plentyToken, contractAddress: 'EMPTY' },
   // wusdcToken: { ...wusdc, contractAddress: '' },
@@ -46,11 +48,11 @@ export const ithacanetTokens: Record<string, Token> = {
   // uusdwusdcLP: { ...uusdwusdcLP, contractAddress: '' },
   // ubtctzbtcLP: { ...ubtctzbtcLP, contractAddress: '' },
   // tzbtcuusdLP: { ...tzbtcwwbtcLP, decimals: 12, contractAddress: '' }
-  ctezcchfLP: { ...ctezcchfLP, decimals: 6, contractAddress: 'KT1JRm8gRGVrCWRE9rdTcqKj8Xos7JuFu5hM', tokenId: 1 },
   ctezxtzLP: { ...ctezxtzLP, decimals: 6, contractAddress: 'KT1MX69KiYtZKNFeKfELyXJrWFhsQGgcuNgh', tokenId: 0 },
   usdtToken: { ...usdtToken, contractAddress: 'KT1J2iy42X6TkRMzX7TJiHh8vibg84fAerPc', tokenId: 0 },
   uxauToken: { ...uxauToken, contractAddress: 'KT1CrNkK2jpdMycfBdPpvTLSLCokRBhZtMq7', tokenId: 4 },
-  uxauuusdLP: { ...uxauuusdLP, contractAddress: 'KT1S9YR9e89s2bn5qURZ5BnwDkQGFhQke94P' }
+  uxauuusdLP: { ...uxauuusdLP, contractAddress: 'KT1S9YR9e89s2bn5qURZ5BnwDkQGFhQke94P' },
+  usdttzbtcxtzLP: { ...usdttzbtcxtzLP, contractAddress: 'KT1FVimHCobgKHEcvrLyMKDPAxrpVjCoUxMf', tokenId: 0 }
 }
 
 export const ithacanetFarms: Farm[] = [
@@ -74,19 +76,112 @@ export const ithacanetFarms: Farm[] = [
 
 export const ithacanetDexes: ExchangePair[] = [
   {
-    token1: ithacanetTokens.ctezToken,
-    token2: ithacanetTokens.cchfToken,
-    dexType: DexType.CHECKER,
-    contractAddress: 'KT1JRm8gRGVrCWRE9rdTcqKj8Xos7JuFu5hM',
-    liquidityToken: ithacanetTokens.ctezcchfLP
+    token1: ithacanetTokens.xtzToken,
+    token2: ithacanetTokens.usdtToken,
+    token3: ithacanetTokens.tzbtcToken,
+    dexType: DexType.MULTISWAP,
+    contractAddress: 'KT1G2iYvNkLhfKdWASUwj6kf2wP4iw9PHHZ4',
+    liquidityToken: ithacanetTokens.usdttzbtcxtzLP,
+    version: SwapVersion.MULTI
   },
   {
     token1: ithacanetTokens.xtzToken,
-    token2: ithacanetTokens.ctezToken,
-    dexType: DexType.CHECKER, //This is a placeholder, there is no type for ctez swap
-    contractAddress: 'KT1CJTkpEH8r1upEzwr1kkEhFsXgoQgyfUND',
-    liquidityToken: ithacanetTokens.ctezxtzLP
+    token2: ithacanetTokens.tzbtcToken,
+    token3: ithacanetTokens.usdtToken,
+    dexType: DexType.MULTISWAP,
+    contractAddress: 'KT1G2iYvNkLhfKdWASUwj6kf2wP4iw9PHHZ4',
+    liquidityToken: ithacanetTokens.usdttzbtcxtzLP,
+    version: SwapVersion.MULTI
   },
+  {
+    token1: ithacanetTokens.usdtToken,
+    token2: ithacanetTokens.tzbtcToken,
+    token3: ithacanetTokens.xtzToken,
+    dexType: DexType.MULTISWAP,
+    contractAddress: 'KT1G2iYvNkLhfKdWASUwj6kf2wP4iw9PHHZ4',
+    liquidityToken: ithacanetTokens.usdttzbtcxtzLP,
+    version: SwapVersion.MULTI
+  },
+  // {
+  //   token1: ithacanetTokens.xtzToken,
+  //   token2: ithacanetTokens.usdtToken,
+  //   token3: ithacanetTokens.tzbtcToken,
+  //   dexType: DexType.MULTISWAP,
+  //   contractAddress: 'KT1Td3eEAtPj4ccFwiBKzFA4hajYnaz3z48Z',
+  //   liquidityToken: ithacanetTokens.usdttzbtcxtzLP,
+  //   version: SwapVersion.MULTI
+  // },
+  // {
+  //   token1: ithacanetTokens.xtzToken,
+  //   token2: ithacanetTokens.tzbtcToken,
+  //   token3: ithacanetTokens.usdtToken,
+  //   dexType: DexType.MULTISWAP,
+  //   contractAddress: 'KT1Td3eEAtPj4ccFwiBKzFA4hajYnaz3z48Z',
+  //   liquidityToken: ithacanetTokens.usdttzbtcxtzLP,
+  //   version: SwapVersion.MULTI
+  // },
+  // {
+  //   token1: ithacanetTokens.usdtToken,
+  //   token2: ithacanetTokens.tzbtcToken,
+  //   token3: ithacanetTokens.xtzToken,
+  //   dexType: DexType.MULTISWAP,
+  //   contractAddress: 'KT1Td3eEAtPj4ccFwiBKzFA4hajYnaz3z48Z',
+  //   liquidityToken: ithacanetTokens.usdttzbtcxtzLP,
+  //   version: SwapVersion.MULTI
+  // },
+
+  //tzbtc-uusd-uxtz
+  // {
+  //   token1: ithacanetTokens.uxtzToken,
+  //   token2: ithacanetTokens.uusdToken,
+  //   token3: ithacanetTokens.tzbtcToken,
+  //   dexType: DexType.MULTISWAP,
+  //   contractAddress: 'KT1FHc49Tgap4QZUpANTL8mPKCBKuB7t3jK6',
+  //   liquidityToken: ithacanetTokens.usdttzbtcxtzLP,
+  //   version: SwapVersion.MULTI
+  // },
+  // {
+  //   token1: ithacanetTokens.uxtzToken,
+  //   token2: ithacanetTokens.tzbtcToken,
+  //   token3: ithacanetTokens.uusdToken,
+  //   dexType: DexType.MULTISWAP,
+  //   contractAddress: 'KT1FHc49Tgap4QZUpANTL8mPKCBKuB7t3jK6',
+  //   liquidityToken: ithacanetTokens.usdttzbtcxtzLP,
+  //   version: SwapVersion.MULTI
+  // },
+  // {
+  //   token1: ithacanetTokens.uusdToken,
+  //   token2: ithacanetTokens.tzbtcToken,
+  //   token3: ithacanetTokens.uxtzToken,
+  //   dexType: DexType.MULTISWAP,
+  //   contractAddress: 'KT1FHc49Tgap4QZUpANTL8mPKCBKuB7t3jK6',
+  //   liquidityToken: ithacanetTokens.usdttzbtcxtzLP,
+  //   version: SwapVersion.MULTI
+  // },
+  // {
+  //   token1: ithacanetTokens.uxtzToken,
+  //   token2: ithacanetTokens.uusdToken,
+  //   dexType: DexType.FLAT_CURVE_V2,
+  //   contractAddress: 'KT1FHc49Tgap4QZUpANTL8mPKCBKuB7t3jKX',
+  //   liquidityToken: ithacanetTokens.usdttzbtcxtzLP,
+  //   version: SwapVersion.LEGACY
+  // },
+  // {
+  //   token1: ithacanetTokens.xtzToken,
+  //   token2: ithacanetTokens.tzbtcToken,
+  //   dexType: DexType.FLAT_CURVE_V2,
+  //   contractAddress: 'KT1FHc49Tgap4QZUpANTL8mPKCBKuB7t3jKX',
+  //   liquidityToken: ithacanetTokens.usdttzbtcxtzLP,
+  //   version: SwapVersion.LEGACY
+  // },
+  // {
+  //   token1: ithacanetTokens.usdtToken,
+  //   token2: ithacanetTokens.tzbtcToken,
+  //   dexType: DexType.FLAT_CURVE_V2,
+  //   contractAddress: 'KT1FHc49Tgap4QZUpANTL8mPKCBKuB7t3jKX',
+  //   liquidityToken: ithacanetTokens.usdttzbtcxtzLP,
+  //   version: SwapVersion.LEGACY
+  // },
   {
     token1: ithacanetTokens.uusdToken,
     token2: ithacanetTokens.uxauToken,
@@ -297,46 +392,6 @@ export const ithacanetContracts: AssetDefinition[] = [
   //   ]
   // },
   {
-    id: 'cCHF', // cCHF
-    symbol: 'cCHF', // cCHF
-    metadata: {
-      targetSymbol: 'CHF',
-      impliedPrice: 1.25,
-      new: true,
-      doubleRewards: ''
-    },
-    collateralOptions: [
-      {
-        token: ithacanetTokens.xtzToken,
-        targetOracle: {
-          address: 'KT1N9HBTTdPvzNQgS7t6qrcCzovDr3ehJKoY',
-          decimals: 6,
-          entrypoint: 'getPrice'
-        },
-        ORACLE_SYMBOL: 'XTZ', // TODO
-        ENGINE_ADDRESS: 'KT1JRm8gRGVrCWRE9rdTcqKj8Xos7JuFu5hM',
-        ENGINE_TYPE: EngineType.CHECKER_V1,
-        OPTIONS_LISTING_ADDRESS: '',
-        SUPPORTS_BAILOUT: false,
-        SUPPORTS_CONVERSION: false,
-        HAS_OBSERVED_PRICE: true,
-        collateralTarget: 1,
-        collateralWarning: 1,
-        collateralEmergency: 1,
-        isLatest: true
-      }
-    ],
-    token: ithacanetTokens.cchfToken, // cchfToken
-    governanceToken: ithacanetTokens.youToken,
-    REWARD_POOL_ADDRESS: 'KT1C9dmcZLs3QLnDZ8oXEHHgbXqfme3JMAh4',
-    SAVINGS_POOL_ADDRESS: '',
-    SAVINGS_V2_POOL_ADDRESS: '',
-    SAVINGS_V3_POOL_ADDRESS: '',
-    SAVINGS_V2_VESTING_ADDRESS: '',
-    GOVERNANCE_DEX: '',
-    DEX: []
-  },
-  {
     id: 'uXAU', // uXAU
     symbol: 'uXAU', // uXAU
     metadata: {
@@ -391,5 +446,8 @@ export const ithacanetNetworkConstants: NetworkConstants = {
   farms: ithacanetFarms,
   dexes: ithacanetDexes,
   unifiedStaking: 'KT1C9dmcZLs3QLnDZ8oXEHHgbXqfme3JMAh4',
-  ctezTezDex: 'KT1H5b7LxEExkFd2Tng77TfuWbM5aPvHstPr'
+  bailoutPool: 'KT1Fgt53nb9vjwNQx4vnpRjyafDVUnqxLjcR',
+  ctezTezDex: 'KT1H5b7LxEExkFd2Tng77TfuWbM5aPvHstPr',
+  dao: 'KT1RqqBxTQZ1VqjUfRgQLAsf7rJaTG8dznvN',
+  legacyDaos: ['KT1S8e8M55cXMfXuoD6bkSoXRTsfwMF9eNdy']
 }

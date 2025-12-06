@@ -13,6 +13,9 @@ import { IndexerConfig } from '../types'
 import { FlatYouvesExchangeInfo, NetworkConstants } from '../networks.base'
 import { TezosToolkit } from '@taquito/taquito'
 import { SingleSideLiquidityInfo, getSingleSideTradeAmount } from './flat-youves-utils'
+import { BehaviorSubject } from 'rxjs'
+
+export const tooOldErrors = new Map<string, BehaviorSubject<boolean>>()
 
 const promiseCache = new Map<string, Promise<unknown>>()
 
@@ -61,9 +64,29 @@ export class FlatYouvesExchangeV2 extends FlatYouvesExchange {
     const dexContract = await this.getContractWalletAbstraction(this.dexAddress)
     const storage = (await this.getStorageOfContract(dexContract)) as any
     const targetPriceOracle = await this.getContractWalletAbstraction(storage.targetPriceOracle)
+
+    //check if the dexAddress is already in the map if not initialize new BehaviorSubject
+    if (!tooOldErrors.has(this.dexAddress)) {
+      tooOldErrors.set(this.dexAddress, new BehaviorSubject<boolean>(false))
+    }
+
     const tokenPriceInCash: BigNumber = await targetPriceOracle.contractViews
       .get_token_price_in_cash()
       .executeView({ viewCaller: this.dexAddress })
+      .then((res) => {
+        if (res !== undefined) {
+          tooOldErrors.get(this.dexAddress)?.next(false)
+        }
+        return res
+      })
+      .catch((e: any) => {
+        console.error(this.dexAddress, e)
+        if (e.message.includes('OldPrice')) {
+          tooOldErrors.get(this.dexAddress)?.next(true)
+        }
+        throw new Error(`Failed to get token price ${this.token1.symbol}-${this.token2.symbol} : ${this.dexAddress} :  ${e.message}`)
+      })
+
     return tokenPriceInCash.shiftedBy(-this.token1.decimals)
   }
 
@@ -72,7 +95,7 @@ export class FlatYouvesExchangeV2 extends FlatYouvesExchange {
     const dexContract = await this.getContractWalletAbstraction(this.dexAddress)
     const storage = (await this.getStorageOfContract(dexContract)) as any
 
-    const tokenPriceInCash: BigNumber = await this.getTokenPriceInCash()
+    const tokenPriceInCash = await this.getTokenPriceInCash()
     const tokenMultiplier = storage.tokenMultiplier.times(tokenPriceInCash)
 
     const marginal = marginalPrice(

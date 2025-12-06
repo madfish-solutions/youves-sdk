@@ -110,12 +110,15 @@ const runOperation = async (node: string, destination: string, parameters: any, 
 }
 
 const getPriceFromOracleView = async (oracle: TargetOracle, tezos: TezosToolkit) => {
+  if (oracle.symbol && (oracle.symbol.includes('DEFI') || oracle.symbol.includes('CHF'))) return
+
   const contract = await tezos.wallet.at(oracle.address)
   const price = await contract.contractViews
     .get_price()
     .executeView({ viewCaller: oracle.address })
     .catch((error) => {
       addStaleOracle(oracle)
+      // console.log('STALE ORACLE ERROR', oracle, error)
       throw error
     })
 
@@ -125,10 +128,14 @@ const getPriceFromOracleView = async (oracle: TargetOracle, tezos: TezosToolkit)
 
 const addStaleOracle = (oracle: TargetOracle) => {
   if (!oracle.symbol) return
+  if (oracle.symbol.includes('DEFI') || oracle.symbol.includes('CHF')) return
   if (oracle.isMarket) {
-    const currentSet = internalMarketStaleOracles.getValue()
-    currentSet.add(oracle.symbol)
-    internalMarketStaleOracles.next(currentSet)
+    // Commented this whole part as we don't have market oracles anymore. 
+
+    // console.log('Adding stale oracle', oracle.symbol, oracle.address)
+    // const currentSet = internalMarketStaleOracles.getValue()
+    // currentSet.add(oracle.symbol)
+    // internalMarketStaleOracles.next(currentSet)
   } else {
     const currentSet = internalStaleOracles.getValue()
     currentSet.add(oracle.symbol)
@@ -315,7 +322,8 @@ export const cacheFactory = (promiseCache: Map<string, Promise<unknown>>, getKey
           } else if (value instanceof BigNumber) {
             return value.toString(10)
           } else if (typeof value === 'object') {
-            return simpleHash(JSON.stringify(value))
+            // Use a custom stringification to avoid circular references
+            return simpleHash(safeStringify(value))
           } else {
             return value
           }
@@ -341,6 +349,20 @@ export const cacheFactory = (promiseCache: Map<string, Promise<unknown>>, getKey
       return descriptor
     }
   }
+}
+
+// Add this function to safely stringify objects with circular references
+function safeStringify(obj: any): string {
+  const seen = new WeakSet()
+  return JSON.stringify(obj, (_key, value) => {
+    if (typeof value === 'object' && value !== null) {
+      if (seen.has(value)) {
+        return '[Circular]'
+      }
+      seen.add(value)
+    }
+    return value
+  })
 }
 
 //get milliseconds from seconds
