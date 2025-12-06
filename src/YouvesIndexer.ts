@@ -29,21 +29,28 @@ export class YouvesIndexer {
    * @returns Promise resolving to a boolean indicating if the indexer is in sync
    */
   public async getSyncStatus(): Promise<boolean> {
-    const result: { data: { dipdup_head_status: { status: string }[] } } = await doRequestWithCache(
-      `${this.indexerConfig.url.substring(0, this.indexerConfig.url.length - 11)}/api/rest/dipdup_head_status?name=${
-        this.indexerConfig.headCheckUrl
-      }`
-    )
+    try {
+      const result: { data: { dipdup_head_status: { status: string }[] } } = await doRequestWithCache(
+        `${this.indexerConfig.url.substring(0, this.indexerConfig.url.length - 11)}/api/rest/dipdup_head_status?name=${
+          this.indexerConfig.headCheckUrl
+        }`
+      )
 
-    const isInSync: boolean | undefined = result.data.dipdup_head_status[0]?.status === 'OK'
+      const isInSync: boolean | undefined = result.data.dipdup_head_status[0]?.status === 'OK'
 
-    if (isInSync) {
-      internalIndexerStatus.next(IndexerStatusType.ONLINE)
-    } else {
-      internalIndexerStatus.next(IndexerStatusType.REINDEXING)
+      if (isInSync) {
+        internalIndexerStatus.next(IndexerStatusType.ONLINE)
+      } else {
+        internalIndexerStatus.next(IndexerStatusType.REINDEXING)
+      }
+
+      return isInSync
+    } catch (error) {
+      console.error('🚨 indexer error: getSyncStatus()', error)
+      internalIndexerStatus.next(IndexerStatusType.OFFLINE)
+
+      return false
     }
-
-    return isInSync
   }
 
   /**
