@@ -3,6 +3,7 @@ export * from './networks.base';
 export * from './networks.mainnet';
 export * from './engines/createEngine';
 export * from './engines/YouvesEngine';
+export * from './staking/bailout-pool';
 export * from './staking/unified-staking';
 export * from './staking/savings-v3';
 export * from './storage/Storage';
