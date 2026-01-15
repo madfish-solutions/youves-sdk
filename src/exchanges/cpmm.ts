@@ -175,9 +175,9 @@ export class CpmmExchange extends Exchange {
         return this.sendAndAwait(
           this.tezos.wallet
             .batch()
-            .withContractCall(tokenContract.methods.approve(this.dexAddress, amountSold))
+            .withContractCall(tokenContract.methodsObject.approve({ spender: this.dexAddress, value: amountSold }))
             .withContractCall(dexContract.methodsObject.token_to_cash(swapParams))
-            .withContractCall(tokenContract.methods.approve(this.dexAddress, 0))
+            .withContractCall(tokenContract.methodsObject.approve({ spender: this.dexAddress, value: 0 }))
         )
       }
     } else {
@@ -211,9 +211,9 @@ export class CpmmExchange extends Exchange {
         return this.sendAndAwait(
           this.tezos.wallet
             .batch()
-            .withContractCall(tokenContract.methods.approve(this.dexAddress, amountSold))
+            .withContractCall(tokenContract.methodsObject.approve({ spender: this.dexAddress, value: amountSold }))
             .withContractCall(dexContract.methodsObject.cash_to_token(swapParams))
-            .withContractCall(tokenContract.methods.approve(this.dexAddress, 0))
+            .withContractCall(tokenContract.methodsObject.approve({ spender: this.dexAddress, value: 0 }))
         )
       }
     }
@@ -308,19 +308,31 @@ export class CpmmExchange extends Exchange {
       )
     } else if (this.token2.type === TokenType.FA1p2) {
       const tokenContract = await this.getContractWalletAbstraction(this.token2.contractAddress)
-      batchCall = batchCall.withContractCall(tokenContract.methods.approve(this.dexAddress, round(maxTokenDeposit)))
+      batchCall = batchCall.withContractCall(
+        tokenContract.methodsObject.approve({ spender: this.dexAddress, value: round(maxTokenDeposit) })
+      )
     }
 
     //add liquidity
     if (this.token1.symbol === 'tez') {
       batchCall = batchCall.withTransfer(
-        dexContract.methods
-          .add_liquidity(source, round(minLiquidityMinted), round(maxTokenDeposit), deadline)
+        dexContract.methodsObject
+          .add_liquidity({
+            owner: source,
+            minLqtMinted: round(minLiquidityMinted),
+            maxTokensDeposited: round(maxTokenDeposit),
+            deadline
+          })
           .toTransferParams({ amount: round(cashDeposit).toNumber(), mutez: true })
       )
     } else {
       batchCall = batchCall.withContractCall(
-        dexContract.methods.add_liquidity(source, round(minLiquidityMinted), round(maxTokenDeposit), deadline)
+        dexContract.methodsObject.add_liquidity({
+          owner: source,
+          minLqtMinted: round(minLiquidityMinted),
+          maxTokensDeposited: round(maxTokenDeposit),
+          deadline
+        })
       )
     }
 
@@ -331,7 +343,9 @@ export class CpmmExchange extends Exchange {
       )
     } else if (this.token2.type === TokenType.FA1p2) {
       const tokenContract = await this.getContractWalletAbstraction(this.token2.contractAddress)
-      batchCall = batchCall.withContractCall(tokenContract.methods.approve(this.dexAddress, 0))
+      batchCall = batchCall.withContractCall(
+        tokenContract.methodsObject.approve({ spender: this.dexAddress, value: 0 })
+      )
     }
 
     return this.sendAndAwait(batchCall)
@@ -346,7 +360,13 @@ export class CpmmExchange extends Exchange {
       this.tezos.wallet
         .batch()
         .withContractCall(
-          dexContract.methods.remove_liquidity(source, round(liquidityToBurn), round(minCashWithdrawn), round(minTokensWithdrawn), deadline)
+          dexContract.methodsObject.remove_liquidity({
+            to: source,
+            lqtBurned: round(liquidityToBurn),
+            minCashWithdrawn: round(minCashWithdrawn),
+            minTokensWithdrawn: round(minTokensWithdrawn),
+            deadline
+          })
         )
     )
   }

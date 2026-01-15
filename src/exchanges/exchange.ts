@@ -1,4 +1,4 @@
-import { ContractAbstraction, ContractMethod, TezosToolkit, Wallet } from '@taquito/taquito'
+import { ContractAbstraction, ContractMethodObject, TezosToolkit, Wallet } from '@taquito/taquito'
 import BigNumber from 'bignumber.js'
 import { DexType, NetworkConstants } from '../networks.base'
 import { Token, TokenType } from '../tokens/token'
@@ -81,10 +81,10 @@ export abstract class Exchange {
     }
   }
 
-  protected async prepareAddTokenOperator(tokenAddress: string, operator: string, tokenId: number): Promise<ContractMethod<Wallet>> {
+  protected async prepareAddTokenOperator(tokenAddress: string, operator: string, tokenId: number): Promise<ContractMethodObject<Wallet>> {
     const source = await this.getOwnAddress()
     const tokenContract = await this.tezos.wallet.at(tokenAddress)
-    return tokenContract.methods.update_operators([
+    return tokenContract.methodsObject.update_operators([
       {
         add_operator: {
           owner: source,
@@ -95,10 +95,10 @@ export abstract class Exchange {
     ])
   }
 
-  protected async prepareRemoveTokenOperator(tokenAddress: string, operator: string, tokenId: number): Promise<ContractMethod<Wallet>> {
+  protected async prepareRemoveTokenOperator(tokenAddress: string, operator: string, tokenId: number): Promise<ContractMethodObject<Wallet>> {
     const source = await this.getOwnAddress()
     const tokenContract = await this.tezos.wallet.at(tokenAddress)
-    return tokenContract.methods.update_operators([
+    return tokenContract.methodsObject.update_operators([
       {
         remove_operator: {
           owner: source,

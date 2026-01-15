@@ -34,11 +34,15 @@ export class TrackerV3Engine extends TrackerV2Engine {
         this.tezos.wallet
           .batch()
           .withTransfer(
-            engineContract.methods
-              .create_vault(baker ? baker : null, isValidAddress(referrer) ? referrer : undefined, this.VIEWER_CALLBACK_ADDRESS)
+            engineContract.methodsObject
+              .create_vault({
+                baker: baker ? baker : null,
+                introducer: isValidAddress(referrer) ? referrer : undefined,
+                contract_address_callback: this.VIEWER_CALLBACK_ADDRESS
+              })
               .toTransferParams({ amount: collateralAmountInMutez, mutez: true })
           )
-          .withContractCall(engineContract.methods.mint(round(new BigNumber(mintAmountInToken))))
+          .withContractCall(engineContract.methodsObject.mint(round(new BigNumber(mintAmountInToken))))
       )
     }
 
@@ -47,10 +51,13 @@ export class TrackerV3Engine extends TrackerV2Engine {
         .batch()
         .withContractCall(await this.prepareAddTokenOperator(this.activeCollateral.token, this.ENGINE_ADDRESS))
         .withContractCall(
-          engineContract.methods.create_vault(isValidAddress(referrer) ? referrer : undefined, this.VIEWER_CALLBACK_ADDRESS)
+          engineContract.methodsObject.create_vault({
+            introducer: isValidAddress(referrer) ? referrer : undefined,
+            contract_address_callback: this.VIEWER_CALLBACK_ADDRESS
+          })
         )
-        .withContractCall(engineContract.methods.deposit(collateralAmountInMutez))
-        .withContractCall(engineContract.methods.mint(round(new BigNumber(mintAmountInToken))))
+        .withContractCall(engineContract.methodsObject.deposit(collateralAmountInMutez))
+        .withContractCall(engineContract.methodsObject.mint(round(new BigNumber(mintAmountInToken))))
         .withContractCall(await this.prepareRemoveTokenOperator(this.activeCollateral.token, this.ENGINE_ADDRESS))
     )
   }

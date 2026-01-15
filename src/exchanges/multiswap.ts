@@ -286,9 +286,9 @@ export class MultiSwapExchange extends Exchange {
       return this.sendAndAwait(
         this.tezos.wallet
           .batch()
-          .withContractCall(tokenContract.methods.approve(this.dexAddress, amountSold))
+          .withContractCall(tokenContract.methodsObject.approve({ spender: this.dexAddress, value: amountSold }))
           .withContractCall(dexContract.methodsObject.token_swap(swapObject))
-          .withContractCall(tokenContract.methods.approve(this.dexAddress, 0))
+          .withContractCall(tokenContract.methodsObject.approve({ spender: this.dexAddress, value: 0 }))
       )
     }
   }
@@ -377,7 +377,9 @@ export class MultiSwapExchange extends Exchange {
       )
     } else if (this.token1.type === TokenType.FA1p2) {
       const tokenContract = await this.getContractWalletAbstraction(this.token1.contractAddress)
-      batchCall = batchCall.withContractCall(tokenContract.methods.approve(this.dexAddress, round(srcTokenAmount)))
+      batchCall = batchCall.withContractCall(
+        tokenContract.methodsObject.approve({ spender: this.dexAddress, value: round(srcTokenAmount) })
+      )
     }
 
     if (this.token2.type === TokenType.FA2) {
@@ -386,7 +388,9 @@ export class MultiSwapExchange extends Exchange {
       )
     } else if (this.token2.type === TokenType.FA1p2) {
       const tokenContract = await this.getContractWalletAbstraction(this.token2.contractAddress)
-      batchCall = batchCall.withContractCall(tokenContract.methods.approve(this.dexAddress, round(dstTokenAmount)))
+      batchCall = batchCall.withContractCall(
+        tokenContract.methodsObject.approve({ spender: this.dexAddress, value: round(dstTokenAmount) })
+      )
     }
 
     if (this.token3.type === TokenType.FA2) {
@@ -395,7 +399,9 @@ export class MultiSwapExchange extends Exchange {
       )
     } else if (this.token3.type === TokenType.FA1p2) {
       const tokenContract = await this.getContractWalletAbstraction(this.token3.contractAddress)
-      batchCall = batchCall.withContractCall(tokenContract.methods.approve(this.dexAddress, round(thirdTokenAmount)))
+      batchCall = batchCall.withContractCall(
+        tokenContract.methodsObject.approve({ spender: this.dexAddress, value: round(thirdTokenAmount) })
+      )
     }
 
     //add liquidity
@@ -431,7 +437,9 @@ export class MultiSwapExchange extends Exchange {
       )
     } else if (this.token1.type === TokenType.FA1p2) {
       const tokenContract = await this.getContractWalletAbstraction(this.token1.contractAddress)
-      batchCall = batchCall.withContractCall(tokenContract.methods.approve(this.dexAddress, 0))
+      batchCall = batchCall.withContractCall(
+        tokenContract.methodsObject.approve({ spender: this.dexAddress, value: 0 })
+      )
     }
 
     if (this.token2.type === TokenType.FA2) {
@@ -440,7 +448,9 @@ export class MultiSwapExchange extends Exchange {
       )
     } else if (this.token2.type === TokenType.FA1p2) {
       const tokenContract = await this.getContractWalletAbstraction(this.token2.contractAddress)
-      batchCall = batchCall.withContractCall(tokenContract.methods.approve(this.dexAddress, 0))
+      batchCall = batchCall.withContractCall(
+        tokenContract.methodsObject.approve({ spender: this.dexAddress, value: 0 })
+      )
     }
 
     if (this.token3.type === TokenType.FA2) {
@@ -449,7 +459,9 @@ export class MultiSwapExchange extends Exchange {
       )
     } else if (this.token3.type === TokenType.FA1p2) {
       const tokenContract = await this.getContractWalletAbstraction(this.token3.contractAddress)
-      batchCall = batchCall.withContractCall(tokenContract.methods.approve(this.dexAddress, 0))
+      batchCall = batchCall.withContractCall(
+        tokenContract.methodsObject.approve({ spender: this.dexAddress, value: 0 })
+      )
     }
 
     return this.sendAndAwait(batchCall)

@@ -169,15 +169,17 @@ export class UnifiedSavings extends UnifiedStaking {
     const source = await this.getOwnAddress()
 
     batchCall = batchCall.withContractCall(
-      tokenContract.methods.update_operators([
+      tokenContract.methodsObject.update_operators([
         { add_operator: { owner: source, operator: this.stakingContract, token_id: Number(this.stakeToken.tokenId) } }
       ])
     )
 
-    batchCall = batchCall.withContractCall(stakingContract.methods.deposit(stakeId, tokenAmount))
+    batchCall = batchCall.withContractCall(
+      stakingContract.methodsObject.deposit({ stake_id: stakeId, token_amount: tokenAmount })
+    )
 
     batchCall = batchCall.withContractCall(
-      tokenContract.methods.update_operators([
+      tokenContract.methodsObject.update_operators([
         { remove_operator: { owner: source, operator: this.stakingContract, token_id: Number(this.stakeToken.tokenId) } }
       ])
     )
@@ -188,7 +190,13 @@ export class UnifiedSavings extends UnifiedStaking {
   async withdraw(stakeId: number, ratioNumerator: number, ratioDenominator: number) {
     const stakingContract = await this.getContractWalletAbstraction(this.stakingContract)
 
-    return this.sendAndAwait(stakingContract.methods.withdraw(ratioDenominator, ratioNumerator, stakeId))
+    return this.sendAndAwait(
+      stakingContract.methodsObject.withdraw({
+        ratio_denominator: ratioDenominator,
+        ratio_numerator: ratioNumerator,
+        stake_id: stakeId
+      })
+    )
   }
 
   protected async getOwnAddress(): Promise<string> {

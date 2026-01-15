@@ -73,7 +73,7 @@ export class LPTokenFarm {
   async claim() {
     const farmContract = await this.getContractWalletAbstraction(this.farm.farmContract)
 
-    return this.sendAndAwait(farmContract.methods.claim())
+    return this.sendAndAwait(farmContract.methodsObject.claim())
   }
 
   async dailyRewards() {
@@ -120,19 +120,23 @@ export class LPTokenFarm {
     let batchCall = this.tezos.wallet.batch()
 
     if (this.farm.lpToken.type === TokenType.FA1p2) {
-      batchCall = batchCall.withContractCall(tokenContract.methods.approve(this.farm.farmContract, 0))
-      batchCall = batchCall.withContractCall(tokenContract.methods.approve(this.farm.farmContract, round(tokenAmount)))
+      batchCall = batchCall.withContractCall(
+        tokenContract.methodsObject.approve({ spender: this.farm.farmContract, value: 0 })
+      )
+      batchCall = batchCall.withContractCall(
+        tokenContract.methodsObject.approve({ spender: this.farm.farmContract, value: round(tokenAmount) })
+      )
     } else {
       const source = await this.getOwnAddress()
 
       batchCall = batchCall.withContractCall(
-        tokenContract.methods.update_operators([
+        tokenContract.methodsObject.update_operators([
           { add_operator: { owner: source, operator: this.farm.farmContract, token_id: Number(this.farm.lpToken.tokenId) } }
         ])
       )
     }
 
-    batchCall = batchCall.withContractCall(farmContract.methods.deposit(tokenAmount))
+    batchCall = batchCall.withContractCall(farmContract.methodsObject.deposit(tokenAmount))
 
     return this.sendAndAwait(batchCall)
   }
@@ -140,7 +144,7 @@ export class LPTokenFarm {
   async withdraw() {
     const farmContract = await this.getContractWalletAbstraction(this.farm.farmContract)
 
-    return this.sendAndAwait(farmContract.methods.withdraw())
+    return this.sendAndAwait(farmContract.methodsObject.withdraw())
   }
 
   protected async getOwnAddress(): Promise<string> {

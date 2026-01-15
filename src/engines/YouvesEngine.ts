@@ -1,4 +1,4 @@
-import { ContractAbstraction, ContractMethod, TezosToolkit, Wallet } from '@taquito/taquito'
+import { ContractAbstraction, ContractMethodObject, TezosToolkit, Wallet } from '@taquito/taquito'
 
 import BigNumber from 'bignumber.js'
 import { CollateralInfo, AssetDefinition, DexType, EngineType, NetworkConstants, TargetOracle, SwapVersion } from '../networks.base'
@@ -220,11 +220,11 @@ export class YouvesEngine {
         this.tezos.wallet
           .batch()
           .withTransfer(
-            engineContract.methods
-              .create_vault(baker ? baker : null, this.VIEWER_CALLBACK_ADDRESS)
+            engineContract.methodsObject
+              .create_vault({ baker: baker ? baker : null, contract_address_callback: this.VIEWER_CALLBACK_ADDRESS })
               .toTransferParams({ amount: collateralAmountInMutez, mutez: true })
           )
-          .withContractCall(engineContract.methods.mint(round(new BigNumber(mintAmountInToken))))
+          .withContractCall(engineContract.methodsObject.mint(round(new BigNumber(mintAmountInToken))))
       )
     } else {
       if (this.activeCollateral.token.symbol === 'tez') {
@@ -232,11 +232,11 @@ export class YouvesEngine {
           this.tezos.wallet
             .batch()
             .withTransfer(
-              engineContract.methods
-                .create_vault(allowSettlement, baker ? baker : null, this.VIEWER_CALLBACK_ADDRESS)
+              engineContract.methodsObject
+                .create_vault({ allows_settlement: allowSettlement, baker: baker ? baker : null, contract_address_callback: this.VIEWER_CALLBACK_ADDRESS })
                 .toTransferParams({ amount: collateralAmountInMutez, mutez: true })
             )
-            .withContractCall(engineContract.methods.mint(round(new BigNumber(mintAmountInToken))))
+            .withContractCall(engineContract.methodsObject.mint(round(new BigNumber(mintAmountInToken))))
         )
       }
 
@@ -244,9 +244,9 @@ export class YouvesEngine {
         this.tezos.wallet
           .batch()
           .withContractCall(await this.prepareAddTokenOperator(this.activeCollateral.token, this.ENGINE_ADDRESS))
-          .withContractCall(engineContract.methods.create_vault(allowSettlement, this.VIEWER_CALLBACK_ADDRESS))
-          .withContractCall(engineContract.methods.deposit(collateralAmountInMutez))
-          .withContractCall(engineContract.methods.mint(round(new BigNumber(mintAmountInToken))))
+          .withContractCall(engineContract.methodsObject.create_vault(allowSettlement))
+          .withContractCall(engineContract.methodsObject.deposit(collateralAmountInMutez))
+          .withContractCall(engineContract.methodsObject.mint(round(new BigNumber(mintAmountInToken))))
           .withContractCall(await this.prepareRemoveTokenOperator(this.activeCollateral.token, this.ENGINE_ADDRESS))
       )
     }
@@ -293,7 +293,7 @@ export class YouvesEngine {
   // TODO: Rename to "setVaultDelegate"
   public async setDeletage(delegate: string | null): Promise<string> {
     const engineContract = await this.engineContractPromise
-    return this.sendAndAwait(engineContract.methods.set_vault_delegate(delegate))
+    return this.sendAndAwait(engineContract.methodsObject.set_vault_delegate(delegate))
   }
 
   public async depositCollateral(amountInMutez: number): Promise<string> {
@@ -306,7 +306,7 @@ export class YouvesEngine {
         this.tezos.wallet
           .batch()
           .withContractCall(await this.prepareAddTokenOperator(this.activeCollateral.token, this.ENGINE_ADDRESS))
-          .withContractCall(engineContract.methods.deposit(amountInMutez))
+          .withContractCall(engineContract.methodsObject.deposit(amountInMutez))
           .withContractCall(await this.prepareRemoveTokenOperator(this.activeCollateral.token, this.ENGINE_ADDRESS))
       )
     }
@@ -315,26 +315,26 @@ export class YouvesEngine {
   public async withdrawCollateral(amountInMutez: number): Promise<string> {
     const engineContract = await this.engineContractPromise
 
-    return this.sendAndAwait(engineContract.methods.withdraw(amountInMutez))
+    return this.sendAndAwait(engineContract.methodsObject.withdraw(amountInMutez))
   }
 
   public async mint(mintAmount: number): Promise<string> {
     const engineContract = await this.engineContractPromise
 
-    return this.sendAndAwait(engineContract.methods.mint(mintAmount))
+    return this.sendAndAwait(engineContract.methodsObject.mint(mintAmount))
   }
 
   public async burn(burnAmount: number): Promise<string> {
     const engineContract = await this.engineContractPromise
 
-    return this.sendAndAwait(engineContract.methods.burn(burnAmount))
+    return this.sendAndAwait(engineContract.methodsObject.burn(burnAmount))
   }
 
   protected async transferToken(tokenAddress: string, recipient: string, tokenAmount: number, tokenId: number): Promise<string> {
     const source = await this.getOwnAddress()
     const tokenContract = await this.tezos.wallet.at(tokenAddress)
     return this.sendAndAwait(
-      tokenContract.methods.transfer([
+      tokenContract.methodsObject.transfer([
         {
           from_: source,
           txs: [
@@ -361,12 +361,12 @@ export class YouvesEngine {
     return this.sendAndAwait(await this.prepareAddTokenOperator(token, operator))
   }
 
-  protected async prepareAddTokenOperator(token: Token, operator: string): Promise<ContractMethod<Wallet>> {
+  protected async prepareAddTokenOperator(token: Token, operator: string): Promise<ContractMethodObject<Wallet>> {
     const source = await this.getOwnAddress()
     const tokenContract = await this.tezos.wallet.at(token.contractAddress)
 
     if (token.type === TokenType.FA2) {
-      return tokenContract.methods.update_operators([
+      return tokenContract.methodsObject.update_operators([
         {
           add_operator: {
             owner: source,
@@ -378,17 +378,17 @@ export class YouvesEngine {
     } else if (token.type === TokenType.FA1p2) {
       const amount = `1${'0'.repeat(token.decimals + 12)}` // TODO: Replace with actual token amount
 
-      return tokenContract.methods.approve(operator, amount)
+      return tokenContract.methodsObject.approve({ spender: operator, value: amount })
     }
     throw new Error('Token type not supported')
   }
 
-  protected async prepareRemoveTokenOperator(token: Token, operator: string): Promise<ContractMethod<Wallet>> {
+  protected async prepareRemoveTokenOperator(token: Token, operator: string): Promise<ContractMethodObject<Wallet>> {
     const source = await this.getOwnAddress()
     const tokenContract = await this.tezos.wallet.at(token.contractAddress)
 
     if (token.type === TokenType.FA2) {
-      return tokenContract.methods.update_operators([
+      return tokenContract.methodsObject.update_operators([
         {
           remove_operator: {
             owner: source,
@@ -398,7 +398,7 @@ export class YouvesEngine {
         }
       ])
     } else if (token.type === TokenType.FA1p2) {
-      return tokenContract.methods.approve(operator, '0')
+      return tokenContract.methodsObject.approve({ spender: operator, value: 0 })
     }
     throw new Error('Token type not supported')
   }
@@ -413,7 +413,7 @@ export class YouvesEngine {
 
   public async claimGovernanceToken(): Promise<string> {
     const governanceTokenContract = await this.governanceTokenContractPromise
-    return this.sendAndAwait(governanceTokenContract.methods.claim(null))
+    return this.sendAndAwait(governanceTokenContract.methodsObject.claim(null))
   }
 
   public async depositToRewardsPool(tokenAmount: number): Promise<string> {
@@ -424,19 +424,19 @@ export class YouvesEngine {
     if (!(await this.isGovernanceTokenOperatorSet(this.REWARD_POOL_ADDRESS))) {
       const governanceTokenContract = await this.governanceTokenContractPromise
       batchCall = batchCall.withContractCall(
-        governanceTokenContract.methods.update_operators([
+        governanceTokenContract.methodsObject.update_operators([
           { add_operator: { owner: source, operator: this.REWARD_POOL_ADDRESS, token_id: Number(this.governanceToken.tokenId) } }
         ])
       )
     }
-    batchCall = batchCall.withContractCall(rewardsPoolContract.methods.deposit(tokenAmount))
+    batchCall = batchCall.withContractCall(rewardsPoolContract.methodsObject.deposit(tokenAmount))
 
     return this.sendAndAwait(batchCall)
   }
 
   public async claimRewards(): Promise<string> {
     const rewardsPoolContract = await this.rewardsPoolContractPromise
-    return this.sendAndAwait(rewardsPoolContract.methods.claim(null))
+    return this.sendAndAwait(rewardsPoolContract.methodsObject.claim(null))
   }
 
   public async claimAndStake(): Promise<string> {
@@ -448,24 +448,26 @@ export class YouvesEngine {
     const rewardsPoolContract = await this.rewardsPoolContractPromise
 
     let batchCall = this.tezos.wallet.batch()
-    batchCall = batchCall.withContractCall(governanceTokenContract.methods.claim(null))
+    batchCall = batchCall.withContractCall(governanceTokenContract.methodsObject.claim(null))
 
     if (!(await this.isGovernanceTokenOperatorSet(this.REWARD_POOL_ADDRESS))) {
       const governanceTokenContract = await this.governanceTokenContractPromise
       batchCall = batchCall.withContractCall(
-        governanceTokenContract.methods.update_operators([
+        governanceTokenContract.methodsObject.update_operators([
           { add_operator: { owner: source, operator: this.REWARD_POOL_ADDRESS, token_id: 0 } }
         ])
       )
     }
-    batchCall = batchCall.withContractCall(rewardsPoolContract.methods.deposit(Math.floor(claimableTokenAmount.toNumber()).toString()))
+    batchCall = batchCall.withContractCall(
+      rewardsPoolContract.methodsObject.deposit(Math.floor(claimableTokenAmount.toNumber()).toString())
+    )
 
     return this.sendAndAwait(batchCall)
   }
 
   public async withdrawFromRewardsPool(): Promise<string> {
     const rewardsPoolContract = await this.rewardsPoolContractPromise
-    return this.sendAndAwait(rewardsPoolContract.methods.withdraw(null))
+    return this.sendAndAwait(rewardsPoolContract.methodsObject.withdraw(null))
   }
 
   public async depositToSavingsPoolV2(tokenAmount: number): Promise<string> {
@@ -480,12 +482,12 @@ export class YouvesEngine {
     if (!(await this.isSyntheticAssetOperatorSet(this.SAVINGS_V2_POOL_ADDRESS))) {
       const tokenContract = await this.tokenContractPromise
       batchCall = batchCall.withContractCall(
-        tokenContract.methods.update_operators([
+        tokenContract.methodsObject.update_operators([
           { add_operator: { owner: source, operator: this.SAVINGS_V2_POOL_ADDRESS, token_id: this.token.tokenId } }
         ])
       )
     }
-    batchCall = batchCall.withContractCall(savingsPoolContract.methods.deposit(tokenAmount))
+    batchCall = batchCall.withContractCall(savingsPoolContract.methodsObject.deposit(tokenAmount))
 
     return this.sendAndAwait(batchCall)
   }
@@ -500,7 +502,7 @@ export class YouvesEngine {
     }
 
     const savingsPoolContract = await this.savingsPoolContractPromise
-    return this.sendAndAwait(savingsPoolContract.methods.withdraw(null))
+    return this.sendAndAwait(savingsPoolContract.methodsObject.withdraw(null))
   }
 
   public async withdrawFromSavingsPoolV2(): Promise<string> {
@@ -510,7 +512,7 @@ export class YouvesEngine {
       throw new Error('savingsPoolContract not defined!')
     }
 
-    return this.sendAndAwait(savingsPoolContract.methods.withdraw(null))
+    return this.sendAndAwait(savingsPoolContract.methodsObject.withdraw(null))
   }
 
   public async withdrawFromVestingPoolV2(): Promise<string> {
@@ -522,7 +524,7 @@ export class YouvesEngine {
     }
 
     return this.sendAndAwait(
-      vestingContract.methods.divest([
+      vestingContract.methodsObject.divest([
         {
           locker: this.SAVINGS_V2_POOL_ADDRESS,
           recipient: source
@@ -547,7 +549,7 @@ export class YouvesEngine {
     if (!(await this.isSyntheticAssetOperatorSet(this.OPTIONS_LISTING_ADDRESS))) {
       const tokenContract = await this.tokenContractPromise
       batchCall = batchCall.withContractCall(
-        tokenContract.methods.update_operators([
+        tokenContract.methodsObject.update_operators([
           {
             add_operator: {
               owner: source,
@@ -558,7 +560,7 @@ export class YouvesEngine {
         ])
       )
     }
-    batchCall = batchCall.withContractCall(optionsListingContract.methods.advertise_intent(tokenAmount))
+    batchCall = batchCall.withContractCall(optionsListingContract.methodsObject.advertise_intent(tokenAmount))
     return this.sendAndAwait(batchCall)
   }
 
@@ -569,7 +571,7 @@ export class YouvesEngine {
       throw new Error('optionsListingContract not defined!')
     }
 
-    return this.sendAndAwait(optionsListingContract.methods.remove_intent(null))
+    return this.sendAndAwait(optionsListingContract.methodsObject.remove_intent(null))
   }
 
   @cache()
@@ -598,7 +600,7 @@ export class YouvesEngine {
 
     return this.sendAndAwait(
       this.tezos.wallet.batch().withTransfer(
-        optionsListingContract.methods.fulfill_intent(intentOwner).toTransferParams({
+        optionsListingContract.methodsObject.fulfill_intent(intentOwner).toTransferParams({
           amount: Math.floor(tezAmount.toNumber()),
           mutez: true
         })
@@ -623,7 +625,10 @@ export class YouvesEngine {
         .batch()
         .withContractCall(await this.prepareAddTokenOperator(this.activeCollateral.token, this.OPTIONS_LISTING_ADDRESS))
         .withContractCall(
-          optionsListingContract.methods.fulfill_intent(intentOwner, Math.floor(tokenAmount.shiftedBy(shiftAmountBy).toNumber()))
+          optionsListingContract.methodsObject.fulfill_intent({
+            address: intentOwner,
+            collateral_token_amount: Math.floor(tokenAmount.shiftedBy(shiftAmountBy).toNumber())
+          })
         )
         .withContractCall(await this.prepareRemoveTokenOperator(this.activeCollateral.token, this.OPTIONS_LISTING_ADDRESS))
     )
@@ -639,7 +644,10 @@ export class YouvesEngine {
     const batch = this.tezos.wallet.batch()
 
     for (let vault of vaults) {
-      batch.withContractCall(optionsListingContract.methods.execute_intent(vault.vaultOwner, vault.tokenAmount))
+      batch.withContractCall(optionsListingContract.methodsObject.execute_intent({
+        address: vault.vaultOwner,
+        token_amount: vault.tokenAmount
+      }))
     }
 
     return this.sendAndAwait(batch)
@@ -647,7 +655,7 @@ export class YouvesEngine {
 
   public async bailout(tokenAmount: number): Promise<string> {
     const engineContract = await this.engineContractPromise
-    return this.sendAndAwait(engineContract.methods.bailout(tokenAmount))
+    return this.sendAndAwait(engineContract.methodsObject.bailout(tokenAmount))
   }
 
   //Quipo Actions start here
