@@ -1,4 +1,3 @@
-import { BigNumber } from 'bignumber.js';
 export * from './networks';
 export * from './networks.base';
 export * from './networks.mainnet';
