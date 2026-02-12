@@ -1,4 +1,4 @@
-import { TezosToolkit } from '@taquito/taquito'
+import { TezosToolkit } from '@tezos-x/octez.js'
 import { CollateralInfo, AssetDefinition, EngineType, NetworkConstants } from '../networks.base'
 import { Storage } from '../public'
 import { Token, TokenSymbol } from '../tokens/token'

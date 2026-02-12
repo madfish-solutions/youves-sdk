@@ -1,4 +1,4 @@
-import { MichelsonMap, TezosToolkit } from '@taquito/taquito'
+import { MichelsonMap, TezosToolkit } from '@tezos-x/octez.js'
 import BigNumber from 'bignumber.js'
 import { MultiswapExchangeInfo, NetworkConstants } from '../networks.base'
 import { Token, TokenType } from '../tokens/token'

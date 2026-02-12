@@ -15,7 +15,7 @@ npm i https://github.com/youves-com/youves-sdk
 Most of the functionality is located in the `engine`:
 
 ```typescript
-import { TezosToolkit } from '@taquito/taquito'
+import { TezosToolkit } from '@tezos-x/octez.js'
 import { createEngine, mainnetContracts, mainnetTokens, mainnetNetworkConstants, Storage } from 'youves-sdk'
 
 const toolkit = new TezosToolkit(RPC_URL)

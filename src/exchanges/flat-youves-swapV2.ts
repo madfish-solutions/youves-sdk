@@ -11,7 +11,7 @@ export interface YieldRewards {
 import { YouvesIndexer } from '../YouvesIndexer'
 import { IndexerConfig } from '../types'
 import { FlatYouvesExchangeInfo, NetworkConstants } from '../networks.base'
-import { TezosToolkit } from '@taquito/taquito'
+import { TezosToolkit } from '@tezos-x/octez.js'
 import { SingleSideLiquidityInfo, getSingleSideTradeAmount } from './flat-youves-utils'
 import { BehaviorSubject } from 'rxjs'
 

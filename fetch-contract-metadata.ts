@@ -1,5 +1,5 @@
 const fs = require('fs')
-const { TezosToolkit } = require('@taquito/taquito')
+const { TezosToolkit } = require('@tezos-x/octez.js')
 const Tezos = new TezosToolkit('https://tezos-node-rolling.prod.gke.papers.tech')
 
 const CONTRACTS_FILE = './submodules/youves-sdk/src/contracts/contracts.ts'

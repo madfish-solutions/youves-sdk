@@ -1,4 +1,4 @@
-import { ContractAbstraction, TezosToolkit, Wallet } from '@taquito/taquito'
+import { ContractAbstraction, TezosToolkit, Wallet } from '@tezos-x/octez.js'
 import BigNumber from 'bignumber.js'
 import { NetworkConstants } from '../networks.base'
 import { Token } from '../tokens/token'
@@ -125,7 +125,7 @@ export class UnifiedStaking {
     //const toDate = new Date()
 
     //return (await this.getTransactionValueInTimeframe(fromDate, toDate)).div(7)
-    
+
     //HARDCODED to 0 for the move to commitment pool
     return new BigNumber(0)
   }

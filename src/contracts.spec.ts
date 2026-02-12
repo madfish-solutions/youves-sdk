@@ -2,8 +2,8 @@ test('test', () => {
   expect(true).toBe(true)
 })
 
-// import { TezosToolkit } from '@taquito/taquito'
-// import { importKey } from '@taquito/signer'
+// import { TezosToolkit } from '@tezos-x/octez.js'
+// import { importKey } from '@tezos-x/octez.js-signer'
 // import { contracts, tokens as tokensEnv, Youves } from './public'
 // import BigNumber from 'bignumber.js'
 // import { Storage } from './storage/Storage'

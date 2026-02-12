@@ -1,4 +1,4 @@
-import { ContractAbstraction, TezosToolkit, Wallet } from '@taquito/taquito'
+import { ContractAbstraction, TezosToolkit, Wallet } from '@tezos-x/octez.js'
 import BigNumber from 'bignumber.js'
 import { NetworkConstants } from '../networks.base'
 import { Token } from '../tokens/token'

@@ -1,4 +1,4 @@
-import { ContractAbstraction, ContractMethodObject, TezosToolkit, Wallet } from '@taquito/taquito'
+import { ContractAbstraction, ContractMethodObject, TezosToolkit, Wallet } from '@tezos-x/octez.js'
 
 import BigNumber from 'bignumber.js'
 import { CollateralInfo, AssetDefinition, DexType, EngineType, NetworkConstants, TargetOracle, SwapVersion } from '../networks.base'
@@ -870,7 +870,7 @@ export class YouvesEngine {
       this.networkConstants
     )
     const exchangeRate = await governanceTokenExchange.getExchangeRate()
-    console.log('exchangeRate', exchangeRate.toNumber()) 
+    console.log('exchangeRate', exchangeRate.toNumber())
     return exchangeRate
   }
 

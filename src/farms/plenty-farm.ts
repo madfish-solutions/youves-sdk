@@ -1,4 +1,4 @@
-import { TezosToolkit } from '@taquito/taquito'
+import { TezosToolkit } from '@tezos-x/octez.js'
 import BigNumber from 'bignumber.js'
 import { Farm, NetworkConstants } from '../networks.base'
 import { IndexerConfig } from '../types'

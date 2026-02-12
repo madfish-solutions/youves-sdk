@@ -1,4 +1,4 @@
-import { ContractAbstraction, ContractMethodObject, MichelsonMap, TezosToolkit, Wallet } from '@taquito/taquito'
+import { ContractAbstraction, ContractMethodObject, MichelsonMap, TezosToolkit, Wallet } from '@tezos-x/octez.js'
 import BigNumber from 'bignumber.js'
 import { DexType, NetworkConstants } from '../networks.base'
 import { mainnetContracts, mainnetNetworkConstants } from '../networks.mainnet'

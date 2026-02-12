@@ -1,6 +1,6 @@
 {
   "name": "@temple-wallet/youves-sdk",
-  "version": "2.0.0-beta.1",
+  "version": "2.0.0-beta.2",
   "description": "An SDK to simplify the interaction with youves smart contracts.",
   "main": "dist/index.js",
   "scripts": {
@@ -15,15 +15,15 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@taquito/contracts-library": "^24.0.1",
-    "@taquito/taquito": "^24.0.1",
-    "@taquito/tzip16": "^24.0.1",
-    "axios": "^0.30.0",
+    "@tezos-x/octez.js-contracts-library": "^0.9.0",
+    "@tezos-x/octez.js": "^0.9.0",
+    "@tezos-x/octez.js-tzip16": "^0.9.0",
+    "axios": "^1.13.5",
     "graphql": "^15.5.1",
     "graphql-request": "^3.5.0"
   },
   "devDependencies": {
-    "@taquito/signer": "22.0.0-beta.0",
+    "@tezos-x/octez.js-signer": "^0.9.0",
     "@types/jest": "26.0.24",
     "@types/node": "18.19.17",
     "jest": "27.0.6",

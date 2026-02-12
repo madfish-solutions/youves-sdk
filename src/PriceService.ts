@@ -1,4 +1,4 @@
-import { ContractAbstraction, TezosToolkit, Wallet } from '@taquito/taquito'
+import { ContractAbstraction, TezosToolkit, Wallet } from '@tezos-x/octez.js'
 import BigNumber from 'bignumber.js'
 import { FlatYouvesExchange } from './exchanges/flat-youves-swap'
 import { AssetDefinition, FlatYouvesExchangeInfo, NetworkConstants, TargetOracle } from './networks.base'
@@ -15,7 +15,7 @@ export class PriceService {
     public readonly networkConstants: NetworkConstants,
     public readonly contracts: AssetDefinition[]
   ) {}
-  
+
   public async getUxtzXtzPrice() {
     //caching
     const cacheKey = 'uxtzXtzPrice'

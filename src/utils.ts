@@ -1,5 +1,5 @@
-import { OpKind } from '@taquito/rpc'
-import { ContractAbstraction, TezosToolkit } from '@taquito/taquito'
+import { OpKind } from '@tezos-x/octez.js-rpc'
+import { ContractAbstraction, TezosToolkit } from '@tezos-x/octez.js'
 import axios, { AxiosError, AxiosResponse } from 'axios'
 import BigNumber from 'bignumber.js'
 import { BehaviorSubject } from 'rxjs'
@@ -130,7 +130,7 @@ const addStaleOracle = (oracle: TargetOracle) => {
   if (!oracle.symbol) return
   if (oracle.symbol.includes('DEFI') || oracle.symbol.includes('CHF')) return
   if (oracle.isMarket) {
-    // Commented this whole part as we don't have market oracles anymore. 
+    // Commented this whole part as we don't have market oracles anymore.
 
     // console.log('Adding stale oracle', oracle.symbol, oracle.address)
     // const currentSet = internalMarketStaleOracles.getValue()

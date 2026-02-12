@@ -6,7 +6,7 @@ import {
   RpcClientInterface,
   RPCOptions,
   ScriptedContracts
-} from '@taquito/rpc'
+} from '@tezos-x/octez.js-rpc'
 
 interface CachedDataInterface {
   [key: string]: {

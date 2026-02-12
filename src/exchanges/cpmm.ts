@@ -1,4 +1,4 @@
-import { TezosToolkit } from '@taquito/taquito'
+import { TezosToolkit } from '@tezos-x/octez.js'
 import BigNumber from 'bignumber.js'
 import { CpmmExchangeInfo, NetworkConstants } from '../networks.base'
 import { Token, TokenType } from '../tokens/token'
