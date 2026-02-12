@@ -133,15 +133,17 @@ export class BailoutPool {
     const source = await this.getOwnAddress()
 
     batchCall = batchCall.withContractCall(
-      tokenContract.methods.update_operators([
+      tokenContract.methodsObject.update_operators([
         { add_operator: { owner: source, operator: this.stakingContract, token_id: Number(this.stakeToken.tokenId) } }
       ])
     )
 
-    batchCall = batchCall.withContractCall(stakingContract.methods.commit(tokenAmount, cooldownDuration, stakeId))
+    batchCall = batchCall.withContractCall(stakingContract.methodsObject.commit({
+      amount: tokenAmount, cooldown_duration: cooldownDuration, stake_id: stakeId
+    }))
 
     batchCall = batchCall.withContractCall(
-      tokenContract.methods.update_operators([
+      tokenContract.methodsObject.update_operators([
         { remove_operator: { owner: source, operator: this.stakingContract, token_id: Number(this.stakeToken.tokenId) } }
       ])
     )
@@ -154,8 +156,8 @@ export class BailoutPool {
 
     let batchCall = this.tezos.wallet.batch()
 
-    batchCall = batchCall.withContractCall(stakingContract.methods.update_parameters())
-    batchCall = batchCall.withContractCall(stakingContract.methods.withdraw(stakeId))
+    batchCall = batchCall.withContractCall(stakingContract.methodsObject.update_parameters())
+    batchCall = batchCall.withContractCall(stakingContract.methodsObject.withdraw(stakeId))
 
     return this.sendAndAwait(batchCall)
   }
@@ -163,13 +165,13 @@ export class BailoutPool {
   async enter_cooldown(stakeId: BigNumber) {
     const stakingContract = await this.getContractWalletAbstraction(this.stakingContract)
 
-    return this.sendAndAwait(stakingContract.methods.enter_cooldown(stakeId))
+    return this.sendAndAwait(stakingContract.methodsObject.enter_cooldown(stakeId))
   }
 
   async recommit(stakeId: BigNumber) {
     const stakingContract = await this.getContractWalletAbstraction(this.stakingContract)
 
-    return this.sendAndAwait(stakingContract.methods.recommit(stakeId))
+    return this.sendAndAwait(stakingContract.methodsObject.recommit(stakeId))
   }
 
   async getAPR() {

@@ -1,4 +1,4 @@
-import { ContractAbstraction, ContractMethod, MichelsonMap, TezosToolkit, Wallet } from '@taquito/taquito'
+import { ContractAbstraction, ContractMethodObject, MichelsonMap, TezosToolkit, Wallet } from '@taquito/taquito'
 import BigNumber from 'bignumber.js'
 import { DexType, NetworkConstants } from '../networks.base'
 import { mainnetContracts, mainnetNetworkConstants } from '../networks.mainnet'
@@ -152,31 +152,31 @@ export class _3RouteExchange extends Exchange {
   }
 
   //adds token operator based on token type
-  protected async addTokenOperator(token: Token, operator: string, amount?: BigNumber): Promise<ContractMethod<Wallet>> {
+  protected async addTokenOperator(token: Token, operator: string, amount?: BigNumber): Promise<ContractMethodObject<Wallet>> {
     const source = await this.getOwnAddress()
     const tokenContract = await this.tezos.wallet.at(token.contractAddress)
 
     if (token.type === TokenType.FA2) {
-      return tokenContract.methods.update_operators([
+      return tokenContract.methodsObject.update_operators([
         { add_operator: { owner: source, operator: operator, token_id: Number(token.tokenId) } }
       ])
     } else if (token.type === TokenType.FA1p2 && amount) {
-      return tokenContract.methods.approve(operator, amount)
+      return tokenContract.methodsObject.approve({ spender: operator, value: amount })
     }
     throw new Error('Token type not supported')
   }
 
   //removes token operator based on token type
-  protected async removeTokenOperator(token: Token, operator: string): Promise<ContractMethod<Wallet>> {
+  protected async removeTokenOperator(token: Token, operator: string): Promise<ContractMethodObject<Wallet>> {
     const source = await this.getOwnAddress()
     const tokenContract = await this.tezos.wallet.at(token.contractAddress)
 
     if (token.type === TokenType.FA2) {
-      return tokenContract.methods.update_operators([
+      return tokenContract.methodsObject.update_operators([
         { remove_operator: { owner: source, operator: operator, token_id: Number(token.tokenId) } }
       ])
     } else if (token.type === TokenType.FA1p2) {
-      return tokenContract.methods.approve(operator, 0)
+      return tokenContract.methodsObject.approve({ spender: operator, value: 0 })
     }
     throw new Error('Token type not supported')
   }
@@ -226,9 +226,15 @@ export class _3RouteExchange extends Exchange {
     //STAKE
     try {
       if (token2.symbol === 'YOU' && cooldownDuration) {
-        batchCall = batchCall.withContractCall(stakingContract.methods.commit(flatRoute.min_out, cooldownDuration, undefined))
+        batchCall = batchCall.withContractCall(stakingContract.methodsObject.commit({
+          amount: flatRoute.min_out,
+          cooldown_duration: cooldownDuration,
+          stake_id: undefined
+        }))
       } else {
-        batchCall = batchCall.withContractCall(stakingContract.methods.deposit(0, flatRoute.min_out))
+        batchCall = batchCall.withContractCall(
+          stakingContract.methodsObject.deposit({ stake_id: 0, token_amount: flatRoute.min_out })
+        )
       }
     } catch (error) {
       console.log(error)

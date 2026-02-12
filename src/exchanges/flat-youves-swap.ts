@@ -77,8 +77,13 @@ export class FlatYouvesExchange extends Exchange {
           .batch()
           .withContractCall(await this.prepareAddTokenOperator(this.token2.contractAddress, this.dexAddress, this.token2.tokenId))
           .withTransfer(
-            dexContract.methods
-              .addLiquidity(source, round(minLiquidityMinted), round(maxTokenDeposit), deadline)
+            dexContract.methodsObject
+              .addLiquidity({
+                owner: source,
+                minLqtMinted: round(minLiquidityMinted),
+                maxTokensDeposited: round(maxTokenDeposit),
+                deadline
+              })
               .toTransferParams({ amount: round(cashDeposit).toNumber(), mutez: true })
           )
           .withContractCall(await this.prepareRemoveTokenOperator(this.token2.contractAddress, this.dexAddress, this.token2.tokenId))
@@ -90,7 +95,13 @@ export class FlatYouvesExchange extends Exchange {
           .withContractCall(await this.prepareAddTokenOperator(this.token1.contractAddress, this.dexAddress, this.token1.tokenId))
           .withContractCall(await this.prepareAddTokenOperator(this.token2.contractAddress, this.dexAddress, this.token2.tokenId))
           .withContractCall(
-            dexContract.methods.addLiquidity(source, round(minLiquidityMinted), round(maxTokenDeposit), round(cashDeposit), deadline)
+            dexContract.methodsObject.addLiquidity({
+              owner: source,
+              minLqtMinted: round(minLiquidityMinted),
+              maxTokensDeposited: round(maxTokenDeposit),
+              cashDeposited: round(cashDeposit),
+              deadline
+            })
           )
           .withContractCall(await this.prepareRemoveTokenOperator(this.token1.contractAddress, this.dexAddress, this.token1.tokenId))
           .withContractCall(await this.prepareRemoveTokenOperator(this.token2.contractAddress, this.dexAddress, this.token2.tokenId))
@@ -100,12 +111,18 @@ export class FlatYouvesExchange extends Exchange {
       return this.sendAndAwait(
         this.tezos.wallet
           .batch()
-          .withContractCall(tokenContract.methods.approve(this.dexAddress, round(cashDeposit)))
+          .withContractCall(tokenContract.methodsObject.approve({ spender: this.dexAddress, value: round(cashDeposit) }))
           .withContractCall(await this.prepareAddTokenOperator(this.token2.contractAddress, this.dexAddress, this.token2.tokenId))
           .withContractCall(
-            dexContract.methods.addLiquidity(source, round(minLiquidityMinted), round(maxTokenDeposit), round(cashDeposit), deadline)
+            dexContract.methodsObject.addLiquidity({
+              owner: source,
+              minLqtMinted: round(minLiquidityMinted),
+              maxTokensDeposited: round(maxTokenDeposit),
+              cashDeposited: round(cashDeposit),
+              deadline
+            })
           )
-          .withContractCall(tokenContract.methods.approve(this.dexAddress, 0))
+          .withContractCall(tokenContract.methodsObject.approve({ spender: this.dexAddress, value: 0 }))
           .withContractCall(await this.prepareRemoveTokenOperator(this.token2.contractAddress, this.dexAddress, this.token2.tokenId))
       )
     }
@@ -135,13 +152,23 @@ export class FlatYouvesExchange extends Exchange {
           this.tezos.wallet
             .batch()
             .withContractCall(await this.prepareAddTokenOperator(tokenAddress, this.dexAddress, tokendId))
-            .withContractCall(dexContract.methods.tokenToCash(source, round(swapAmount), round(swapMinReceived), deadline))
+            .withContractCall(dexContract.methodsObject.tokenToCash({
+              to: source,
+              tokensSold: round(swapAmount),
+              minCashBought: round(swapMinReceived),
+              deadline
+            }))
             .withContractCall(await this.prepareRemoveTokenOperator(tokenAddress, this.dexAddress, tokendId))
 
             .withContractCall(await this.prepareAddTokenOperator(this.token2.contractAddress, this.dexAddress, this.token2.tokenId))
             .withTransfer(
-              dexContract.methods
-                .addLiquidity(source, round(minLiquidityMinted), round(maxTokenDeposit), deadline)
+              dexContract.methodsObject
+                .addLiquidity({
+                  owner: source,
+                  minLqtMinted: round(minLiquidityMinted),
+                  maxTokensDeposited: round(maxTokenDeposit),
+                  deadline
+                })
                 .toTransferParams({ amount: round(cashDeposit).toNumber(), mutez: true })
             )
             .withContractCall(await this.prepareRemoveTokenOperator(this.token2.contractAddress, this.dexAddress, this.token2.tokenId))
@@ -151,13 +178,24 @@ export class FlatYouvesExchange extends Exchange {
           this.tezos.wallet
             .batch()
             .withContractCall(await this.prepareAddTokenOperator(tokenAddress, this.dexAddress, tokendId))
-            .withContractCall(dexContract.methods.tokenToCash(source, round(swapAmount), round(swapMinReceived), deadline))
+            .withContractCall(dexContract.methodsObject.tokenToCash({
+              to: source,
+              tokensSold: round(swapAmount),
+              minCashBought: round(swapMinReceived),
+              deadline
+            }))
             .withContractCall(await this.prepareRemoveTokenOperator(tokenAddress, this.dexAddress, tokendId))
 
             .withContractCall(await this.prepareAddTokenOperator(this.token1.contractAddress, this.dexAddress, this.token1.tokenId))
             .withContractCall(await this.prepareAddTokenOperator(this.token2.contractAddress, this.dexAddress, this.token2.tokenId))
             .withContractCall(
-              dexContract.methods.addLiquidity(source, round(minLiquidityMinted), round(cashDeposit), round(maxTokenDeposit), deadline)
+              dexContract.methodsObject.addLiquidity({
+                owner: source,
+                minLqtMinted: round(minLiquidityMinted),
+                cashDeposited: round(cashDeposit),
+                maxTokensDeposited: round(maxTokenDeposit),
+                deadline
+              })
             )
             .withContractCall(await this.prepareRemoveTokenOperator(this.token1.contractAddress, this.dexAddress, this.token1.tokenId))
             .withContractCall(await this.prepareRemoveTokenOperator(this.token2.contractAddress, this.dexAddress, this.token2.tokenId))
@@ -168,15 +206,26 @@ export class FlatYouvesExchange extends Exchange {
           this.tezos.wallet
             .batch()
             .withContractCall(await this.prepareAddTokenOperator(tokenAddress, this.dexAddress, tokendId))
-            .withContractCall(dexContract.methods.tokenToCash(source, round(swapAmount), round(swapMinReceived), deadline))
+            .withContractCall(dexContract.methodsObject.tokenToCash({
+              to: source,
+              tokensSold: round(swapAmount),
+              minCashBought: round(swapMinReceived),
+              deadline
+            }))
             .withContractCall(await this.prepareRemoveTokenOperator(tokenAddress, this.dexAddress, tokendId))
 
-            .withContractCall(cashContract.methods.approve(this.dexAddress, round(maxTokenDeposit)))
+            .withContractCall(cashContract.methodsObject.approve({ spender: this.dexAddress, value: round(maxTokenDeposit) }))
             .withContractCall(await this.prepareAddTokenOperator(this.token2.contractAddress, this.dexAddress, this.token2.tokenId))
             .withContractCall(
-              dexContract.methods.addLiquidity(source, round(minLiquidityMinted), round(cashDeposit), round(maxTokenDeposit), deadline)
+              dexContract.methodsObject.addLiquidity({
+                owner: source,
+                minLqtMinted: round(minLiquidityMinted),
+                cashDeposited: round(cashDeposit),
+                maxTokensDeposited: round(maxTokenDeposit),
+                deadline
+              })
             )
-            .withContractCall(cashContract.methods.approve(this.dexAddress, 0))
+            .withContractCall(cashContract.methodsObject.approve({ spender: this.dexAddress, value: 0 }))
             .withContractCall(await this.prepareRemoveTokenOperator(this.token2.contractAddress, this.dexAddress, this.token2.tokenId))
         )
       }
@@ -187,14 +236,19 @@ export class FlatYouvesExchange extends Exchange {
         this.tezos.wallet
           .batch()
           .withTransfer(
-            dexContract.methods
-              .cashToToken(source, round(swapMinReceived), deadline)
+            dexContract.methodsObject
+              .cashToToken({ to: source, minTokensBought: round(swapMinReceived), deadline })
               .toTransferParams({ amount: swapAmount.toNumber(), mutez: true })
           )
           .withContractCall(await this.prepareAddTokenOperator(this.token2.contractAddress, this.dexAddress, this.token2.tokenId))
           .withTransfer(
-            dexContract.methods
-              .addLiquidity(source, round(minLiquidityMinted), round(maxTokenDeposit), deadline)
+            dexContract.methodsObject
+              .addLiquidity({
+                owner: source,
+                minLqtMinted: round(minLiquidityMinted),
+                maxTokensDeposited: round(maxTokenDeposit),
+                deadline
+              })
               .toTransferParams({ amount: round(cashDeposit).toNumber(), mutez: true })
           )
           .withContractCall(await this.prepareRemoveTokenOperator(this.token2.contractAddress, this.dexAddress, this.token2.tokenId))
@@ -207,13 +261,24 @@ export class FlatYouvesExchange extends Exchange {
         this.tezos.wallet
           .batch()
           .withContractCall(await this.prepareAddTokenOperator(cashAddress, this.dexAddress, cashId))
-          .withContractCall(dexContract.methods.cashToToken(source, round(swapMinReceived), round(swapAmount), deadline))
+          .withContractCall(dexContract.methodsObject.cashToToken({
+            to: source,
+            minTokensBought: round(swapMinReceived),
+            cashSold: round(swapAmount),
+            deadline
+          }))
           .withContractCall(await this.prepareRemoveTokenOperator(cashAddress, this.dexAddress, cashId))
 
           .withContractCall(await this.prepareAddTokenOperator(this.token1.contractAddress, this.dexAddress, this.token1.tokenId))
           .withContractCall(await this.prepareAddTokenOperator(this.token2.contractAddress, this.dexAddress, this.token2.tokenId))
           .withContractCall(
-            dexContract.methods.addLiquidity(source, round(minLiquidityMinted), round(maxTokenDeposit), round(cashDeposit), deadline)
+            dexContract.methodsObject.addLiquidity({
+              owner: source,
+              minLqtMinted: round(minLiquidityMinted),
+              maxTokensDeposited: round(maxTokenDeposit),
+              cashDeposited: round(cashDeposit),
+              deadline
+            })
           )
           .withContractCall(await this.prepareRemoveTokenOperator(this.token1.contractAddress, this.dexAddress, this.token1.tokenId))
           .withContractCall(await this.prepareRemoveTokenOperator(this.token2.contractAddress, this.dexAddress, this.token2.tokenId))
@@ -224,16 +289,27 @@ export class FlatYouvesExchange extends Exchange {
       return this.sendAndAwait(
         this.tezos.wallet
           .batch()
-          .withContractCall(tokenContract.methods.approve(this.dexAddress, round(swapAmount)))
-          .withContractCall(dexContract.methods.cashToToken(source, round(swapMinReceived), round(swapAmount), deadline))
-          .withContractCall(tokenContract.methods.approve(this.dexAddress, 0))
+          .withContractCall(tokenContract.methodsObject.approve({ spender: this.dexAddress, value: round(swapAmount) }))
+          .withContractCall(dexContract.methodsObject.cashToToken({
+            to: source,
+            minTokensBought: round(swapMinReceived),
+            cashSold: round(swapAmount),
+            deadline
+          }))
+          .withContractCall(tokenContract.methodsObject.approve({ spender: this.dexAddress, value: 0 }))
 
-          .withContractCall(tokenContract.methods.approve(this.dexAddress, round(cashDeposit)))
+          .withContractCall(tokenContract.methodsObject.approve({ spender: this.dexAddress, value: round(cashDeposit) }))
           .withContractCall(await this.prepareAddTokenOperator(this.token2.contractAddress, this.dexAddress, this.token2.tokenId))
           .withContractCall(
-            dexContract.methods.addLiquidity(source, round(minLiquidityMinted), round(maxTokenDeposit), round(cashDeposit), deadline)
+            dexContract.methodsObject.addLiquidity({
+              owner: source,
+              minLqtMinted: round(minLiquidityMinted),
+              maxTokensDeposited: round(maxTokenDeposit),
+              cashDeposited: round(cashDeposit),
+              deadline
+            })
           )
-          .withContractCall(tokenContract.methods.approve(this.dexAddress, 0))
+          .withContractCall(tokenContract.methodsObject.approve({ spender: this.dexAddress, value: 0 }))
           .withContractCall(await this.prepareRemoveTokenOperator(this.token2.contractAddress, this.dexAddress, this.token2.tokenId))
       )
     }
@@ -249,7 +325,13 @@ export class FlatYouvesExchange extends Exchange {
       this.tezos.wallet
         .batch()
         .withContractCall(
-          dexContract.methods.removeLiquidity(source, round(liquidityToBurn), round(minCashWithdrawn), round(minTokensWithdrawn), deadline)
+          dexContract.methodsObject.removeLiquidity({
+            to: source,
+            lqtBurned: round(liquidityToBurn),
+            minCashWithdrawn: round(minCashWithdrawn),
+            minTokensWithdrawn: round(minTokensWithdrawn),
+            deadline
+          })
         )
     )
   }
@@ -309,8 +391,8 @@ export class FlatYouvesExchange extends Exchange {
         this.tezos.wallet
           .batch()
           .withTransfer(
-            dexContract.methods
-              .cashToToken(source, round(minimumReceived), deadline)
+            dexContract.methodsObject
+              .cashToToken({ to: source, minTokensBought: round(minimumReceived), deadline })
               .toTransferParams({ amount: tokenAmount.toNumber(), mutez: true })
           )
       )
@@ -320,7 +402,12 @@ export class FlatYouvesExchange extends Exchange {
         this.tezos.wallet
           .batch()
           .withContractCall(await this.prepareAddTokenOperator(cashAddress, this.dexAddress, cashId))
-          .withContractCall(dexContract.methods.cashToToken(source, round(minimumReceived), round(tokenAmount), deadline))
+          .withContractCall(dexContract.methodsObject.cashToToken({
+            to: source,
+            minTokensBought: round(minimumReceived),
+            cashSold: round(tokenAmount),
+            deadline
+          }))
           .withContractCall(await this.prepareRemoveTokenOperator(cashAddress, this.dexAddress, cashId))
       )
     } else {
@@ -328,9 +415,14 @@ export class FlatYouvesExchange extends Exchange {
       return this.sendAndAwait(
         this.tezos.wallet
           .batch()
-          .withContractCall(tokenContract.methods.approve(this.dexAddress, round(tokenAmount)))
-          .withContractCall(dexContract.methods.cashToToken(source, round(minimumReceived), round(tokenAmount), deadline))
-          .withContractCall(tokenContract.methods.approve(this.dexAddress, 0))
+          .withContractCall(tokenContract.methodsObject.approve({ spender: this.dexAddress, value: round(tokenAmount) }))
+          .withContractCall(dexContract.methodsObject.cashToToken({
+            to: source,
+            minTokensBought: round(minimumReceived),
+            cashSold: round(tokenAmount),
+            deadline
+          }))
+          .withContractCall(tokenContract.methodsObject.approve({ spender: this.dexAddress, value: 0 }))
       )
     }
   }
@@ -349,7 +441,9 @@ export class FlatYouvesExchange extends Exchange {
       this.tezos.wallet
         .batch()
         .withContractCall(await this.prepareAddTokenOperator(tokenAddress, this.dexAddress, tokenId))
-        .withContractCall(dexContract.methods.tokenToCash(source, round(tokenAmount), round(minimumReceived), deadline))
+        .withContractCall(dexContract.methodsObject.tokenToCash({
+          to: source, tokensSold: round(tokenAmount), minCashBought: round(minimumReceived), deadline
+        }))
         .withContractCall(await this.prepareRemoveTokenOperator(tokenAddress, this.dexAddress, tokenId))
     )
   }

@@ -126,8 +126,8 @@ export class QuipuswapExchange extends Exchange {
       this.tezos.wallet
         .batch()
         .withTransfer(
-          dexContract.methods
-            .tezToTokenPayment(round(minimumReceived), source)
+          dexContract.methodsObject
+            .tezToTokenPayment({ min_out: round(minimumReceived), receiver: source })
             .toTransferParams({ amount: amountInMutez.toNumber(), mutez: true })
         )
     )
@@ -145,7 +145,11 @@ export class QuipuswapExchange extends Exchange {
       this.tezos.wallet
         .batch()
         .withContractCall(await this.prepareAddTokenOperator(tokenAddress, this.dexAddress, tokenId))
-        .withContractCall(dexContract.methods.tokenToTezPayment(round(tokenAmount), round(minimumReceived), source))
+        .withContractCall(dexContract.methodsObject.tokenToTezPayment({
+          amount: round(tokenAmount),
+          min_out: round(minimumReceived),
+          receiver: source
+        }))
         .withContractCall(await this.prepareRemoveTokenOperator(tokenAddress, this.dexAddress, tokenId))
     )
   }

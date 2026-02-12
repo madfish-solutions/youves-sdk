@@ -107,7 +107,13 @@ export class PlentyExchange extends Exchange {
       this.tezos.wallet
         .batch()
         .withContractCall(await this.prepareAddTokenOperator(token1Address, this.dexAddress, token1Id))
-        .withContractCall(dexContract.methods.Swap(round(minimumReceived), source, token2Address, Number(token2Id), round(tokenAmount)))
+        .withContractCall(dexContract.methodsObject.Swap({
+          MinimumTokenOut: round(minimumReceived),
+          recipient: source,
+          requiredTokenAddress: token2Address,
+          requiredTokenId: Number(token2Id),
+          tokenAmountIn: round(tokenAmount)
+        }))
         .withContractCall(await this.prepareRemoveTokenOperator(token1Address, this.dexAddress, token1Id))
     )
   }
@@ -126,7 +132,13 @@ export class PlentyExchange extends Exchange {
       this.tezos.wallet
         .batch()
         .withContractCall(await this.prepareAddTokenOperator(token2Address, this.dexAddress, token2Id))
-        .withContractCall(dexContract.methods.Swap(round(minimumReceived), source, token1Address, Number(token1Id), round(tokenAmount)))
+        .withContractCall(dexContract.methodsObject.Swap({
+          MinimumTokenOut: round(minimumReceived),
+          recipient: source,
+          requiredTokenAddress: token1Address,
+          requiredTokenId: Number(token1Id),
+          tokenAmountIn: round(tokenAmount)
+        }))
         .withContractCall(await this.prepareRemoveTokenOperator(token2Address, this.dexAddress, token2Id))
     )
   }
